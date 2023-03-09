@@ -23,5 +23,8 @@ Users can share their books with their others with an export function (in Markdo
 They can also share the links with their friends in order for iteration.
 
 # ER Diagram
+<img width="990" alt="image" src="https://user-images.githubusercontent.com/123018982/224158193-8c70494e-6f32-4d8e-b244-20e1ff14298e.png">
 
 # Relational Schema
+<img width="990" alt="image" src="https://user-images.githubusercontent.com/123018982/224158251-9e013ba5-6bb6-424e-bb67-67c385d728cd.png">
+
