@@ -1,3 +1,6 @@
+import mysql as sql
+
+
 '''
 CREATE TABLE User
 (
