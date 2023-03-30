@@ -20,7 +20,7 @@ sess.init_app(app)
 #Basic root route - show the word 'homepage'
 @app.route('/')  #route name
 def home(): #view function
-    return render_template('main.html', title='Home')
+    return render_template('testPage.html', title='Home')
     #return 'homepage'
 
 @app.context_processor
