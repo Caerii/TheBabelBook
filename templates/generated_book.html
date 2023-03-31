@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Generated Book</title>
+</head>
+<body>
+	<h1>List of Chapter Subheadings</h1>
+	<ul>
+		{% for subtitle in text_output.split('\n') %}
+			{% for line in subtitle.split('.') %}
+				{% if line %}
+					<li>{{ line }}</li>
+				{% endif %}
+			{% endfor %}
+		{% endfor %}
+	</ul>
+</body>
+</html>

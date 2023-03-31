@@ -2,7 +2,7 @@ import mysql as sql
 
 treenode_table = '''CREATE TABLE TreeNode
 (
-  NodeID INT NOT NULL,
+  NodeID INT NOT NULL AUTO_INCREMENT,
   ParentNodeID INT,
   NodeLabel VARCHAR(255) NOT NULL,
   NodeData TEXT,
