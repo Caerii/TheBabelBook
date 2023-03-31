@@ -1,105 +1,16 @@
 {% extends "base.html" %}
 
-
 {% block content %}
-            <div class="container-fluid rounded-lg" style="background-color: #f2f2f2; padding: 20px;">
-                <table id="nested-nodes-table">
-                    <tr>
-                        <td colspan="2">
-                            <button class="btn btn-primary float-right">Login</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <input type="text" class="form-control rounded" placeholder="Prompt to generate a book here!" style="margin-top: 20px;">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <div id="editor" class="rounded"></div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <details>
-                <summary>Expand node!</summary>
-                <table>
-                    <tr>
-                        <td colspan="2">Header</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Text</td>
-                    <tr>
-                        <td colspan="2">
-                            <button onclick="addNestedNode()" class="rounded-lg">Add Nested Node</button>
-                        </td>
-                    </tr>
-                </table>
-            </details>
-            <script>
-                var editor = new Editor({
-                    holder: 'editor',
-                    nodes: [
-                        {
-                            name: 'Header',
-                            fields: [
-                                {
-                                    name: 'Text',
-                                    type: 'text'
-                                }
-                            ]
-                        },
-                        {
-                            name: 'Paragraph',
-                            fields: [
-                                {
-                                    name: 'Text',
-                                    type: 'text'
-                                }
-                            ]
-                        }
-                    ]
-                });
-                function addNestedNode(depth=0) {
-                  var nestedNode = prompt("Enter the name of the nested node:");
-                  var parentNode = document.getElementById("nested-nodes-table");
-                  var newTr = document.createElement("tr");
-                  var newTd = document.createElement("td");
-                  newTd.innerHTML = nestedNode;
-                  var newUl = document.createElement("ul");
-                  var newNestedLi = document.createElement("li");
-                  newNestedLi.innerHTML = "Text";
-                  newUl.appendChild(newNestedLi);
-                  newTd.appendChild(newUl);
-                  newTr.appendChild(newTd);
-                  parentNode.appendChild(newTr);
-                  newTd.style.paddingLeft = depth * 20 + "px";
-                
-                  // Add button to hide/display nodes
-                  var toggleButton = document.createElement("button");
-                  toggleButton.innerHTML = "Toggle Nodes";
-                  var toggleTd = document.createElement("td");
-                  toggleTd.appendChild(toggleButton);
-                  newTr.appendChild(toggleTd);
-                
-                  // Add event listener to toggle button
-                  toggleButton.addEventListener("click", function () {
-                    var nestedNodes = newTr.querySelectorAll("ul");
-                    for (var i = 0; i < nestedNodes.length; i++) {
-                      nestedNodes[i].classList.toggle("hidden");
-                    }
-                  });
-                
-                  // Recursively add nested nodes
-                  var nestedButton = document.createElement("button");
-                  nestedButton.innerHTML = "Add Nested Node";
-                  var nestedTd = document.createElement("td");
-                  nestedTd.appendChild(nestedButton);
-                  newTr.appendChild(nestedTd);
-                  nestedTd.style.paddingLeft = "20px";
-                  nestedButton.addEventListener("click", function () {
-                    addNestedNode(depth + 1);
-                  });
-                }
-            </script>
+    <div style="padding: 20px; background-color: #f2f2f2; border-radius: 10px;">
+        {% if msg %}
+            {{ msg }}
+        {% else %}
+            <form method="POST" action="/generate_book">
+                <label for="book_description" style="color: lightgrey;">Describe a book you want!</label>
+                <input type="text" id="book_description" name="book_description" placeholder="The ancient book of eggnog." >
+                <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">Generate Book</button>
+            </form>
+        {% endif %}
+    </div>
+    <button style="position: absolute; top: 20px; right: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">Login</button>
 {% endblock %}

@@ -5,6 +5,7 @@ from flask_session import Session
 from datetime import timedelta
 from user import user
 import time
+import openai
 
 #create Flask app instance
 app = Flask(__name__,static_url_path='')
@@ -121,6 +122,23 @@ def submitName():
     print(username)
     #At this point we would INSERT the user's name to the mysql table
     return render_template('message.html',msg='name '+str(username)+' added!')
+
+@app.route('/generateBook', methods=['GET','POST'])
+def generateBook():
+    user_prompt = request.form.get('prompt')
+    prompt = f"Please generate a list of chapter subheadings for the book with a book with the description as <{user_prompt}> in a numbered, bulleted list"
+    # Call the OpenAI API with the prompt to generate a list of book subtitles
+    # Format the list as "Please generate a list of chapter subheadings for the book with the {user_prompt} in a numbered, bulleted list"
+    generated_list = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=60,
+        n=1,
+        stop=None,
+        temperature=0.5,
+    )
+    return generated_list.choices[0].text
+
 
 @app.route('/login',methods = ['GET','POST'])
 def login():
