@@ -46,34 +46,35 @@ if result == 0: #create
     print(t.data)
 
 if result == 1: #read
-    p = product()
-    p.getAll() # get all records
-    product_index = makeMenu('Select Product', p.toList())
+    t = tree()
+    t.getAll() # get all records
+    product_index = makeMenu('Select Product', t.toList())
     print("Here is the stuff:\n")
-    print(p.data[product_index]['ProductName'])
-    print(p.data[product_index]['ProductDescription'])
-    print(p.data[product_index]['ProductPrice'])
-    print(p.data[product_index]['ProductStock'])
+    print(t.data[product_index]['ParentNodeID'])
+    print(t.data[product_index]['NodeLabel'])
+    print(t.data[product_index]['NodeData'])
+    print(t.data[product_index]['NodeLevel'])
 
 if result == 2: #update
-    p = product()
-    p.getAll()
-    product_index = makeMenu('Select Product', p.toList())
-    p_index = p.data[product_index]['ProductID']
+    t = tree()
+    t.getAll()
+    product_index = makeMenu('Select Book', t.toList())
+    print("t.data!!! :", t.data)
+    p_index = t.data[product_index]['NodeID']
     print(f"product index: {product_index}")
     # for field in p.fields:
         # p.data[product_index][field] = input(f"Enter {field}: ")
 
-    p.data[product_index]['ProductName'] = input('Enter Product Name: ')
-    p.data[product_index]['ProductDescription'] = input('Enter Product Description: ')
-    p.data[product_index]['ProductPrice'] = input('Enter Product Price: ')
-    p.data[product_index]['ProductStock'] = input('Enter Product Stock: ')
-    p.update(product_index)
+    t.data[product_index]['ParentNodeID'] = None
+    t.data[product_index]['NodeLabel'] = 'bookvygt6ty'
+    t.data[product_index]['NodeData'] = 'this time the dog chased the cat' 
+    t.data[product_index]['NodeLevel'] = '4'
+    t.update(product_index)
 
 if result == 3: #delete
-    p = product()
-    p.getAll()
-    product_index = makeMenu('Select Product', p.toList())
-    p_index = p.data[product_index]['ProductID']
-    p.deleteById(p_index) #delete record by id
-    print("Deleted product with id: " + str(p_index))
+    t = tree()
+    t.getAll()
+    product_index = makeMenu('Select Product', t.toList())
+    t_index = t.data[product_index]['NodeID']
+    t.deleteById(t_index) #delete record by id
+    print("Deleted product with id: " + str(t_index))
