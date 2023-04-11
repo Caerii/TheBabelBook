@@ -3,7 +3,7 @@ import hashlib
 
 class user(baseObject):
     def __init__(self):
-        self.setup('demo_users')
+        self.setup('jakirab_sofia_users')
         self.roles = [{'value':'admin','text':'admin'},{'value':'customer','text':'customer'}]
     def hashPassword(self,pw):
         pw = pw+'xyz'

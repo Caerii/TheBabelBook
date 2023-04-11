@@ -127,21 +127,25 @@ def submitName():
 @app.route('/generateBook', methods=['GET','POST'])
 def generateBook():
     user_prompt = request.form.get('prompt')
-    prompt = f"Please generate a list of chapter subheadings for the book with a book with the description as <{user_prompt}> in a numbered, bulleted list"
+    prompt = f"Please generate a list of chapter subheadings for the book with a book with the description as <{user_prompt}> in a numbered, bulleted list.\n 1. example_subtitle1 \n 2. example_subtitle2 \n New chapter based on description:"
     # Call the OpenAI API with the prompt to generate a list of book subtitles
     # Format the list as "Please generate a list of chapter subheadings for the book with the {user_prompt} in a numbered, bulleted list"
     openai.api_key = mysecrets.OPENAI_API_KEY # Set the OpenAI API key
     generated_list = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
-        max_tokens=60,
+        max_tokens=160,
         n=1,
         stop=None,
-        temperature=0.5,
+        temperature=0.9,
     )
     text_output = generated_list.choices[0].text
     # Format the output so that it replaces periods with new line characters
-    text_output = text_output.replace(".", ".\n")
+    # text_output = text_output.replace(" ", "\n")
+    # Create a list, each element of the list is composed of the integer, a period, space, and all of the words until the next number
+    for i in range (len(text_output)):
+        # text_output = str(i+1)
+        text_output = text_output.replace(str(i+1)+".", str(i+1) + " -")
 
     # Return the generated list of subtitles
     return render_template('generated_book.html', text_output=text_output)
