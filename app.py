@@ -22,7 +22,7 @@ sess.init_app(app)
 #Basic root route - show the word 'homepage'
 @app.route('/')  #route name
 def home(): #view function
-    return render_template('testPage.html', title='Home')
+    return render_template('testPage2.html', title='Home')
     #return 'homepage'
 
 @app.context_processor
@@ -47,7 +47,6 @@ def set():
 def get():
     return session.get('key', 'not set')
 
-
 @app.route('/main')
 def main():
     if checkSession() == False: 
@@ -59,12 +58,12 @@ def main():
 
 @app.route('/users/manage',methods=['GET','POST'])
 def manage_user():
-    if checkSession() == False or session['user']['role'] != 'admin': 
-        return redirect('/login')
+    # if checkSession() == False or session['user']['role'] != 'admin': 
+    #     return redirect('/login')
     o = user()
-    l = location()
-    l.getAll()
-    o.attachRelated('location',l)
+    # l = location()
+    # l.getAll()
+    # o.attachRelated('location',l)
 
 
     action = request.args.get('action')
@@ -161,6 +160,8 @@ def login():
     '''
     if request.form.get('email') is not None and request.form.get('password') is not None:
         u = user()
+        u.getAll()
+        print(u.data)
         if u.tryLogin(request.form.get('email'),request.form.get('password')):
             print('login ok')
             session['user'] = u.data[0]

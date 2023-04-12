@@ -2,7 +2,7 @@ from baseObject import baseObject
 
 class tree(baseObject):
     def __init__(self):
-        self.setup('TreeNode')
+        self.setup('jakirab_sofia_treenode')
         self.d = {}
     def toList(self):
         l = []
