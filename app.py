@@ -11,6 +11,7 @@ import openai
 #create Flask app instance
 app = Flask(__name__,static_url_path='')
 
+
 #Configure serverside sessions 
 app.config['SECRET_KEY'] = '56hdtryhRTg'
 app.config['SESSION_PERMANENT'] = True
@@ -28,6 +29,10 @@ def home(): #view function
 @app.context_processor
 def inject_user():
     return dict(me=session.get('user'))
+
+@app.context_processor
+def inject_url_for():
+    return dict(url_for=url_for)
 
 @app.route('/confirm',methods=['GET','POST'])
 def confirm():

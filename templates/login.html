@@ -2,24 +2,44 @@
 
 {% block content %}
     <h1>Login</h1>
-	{% if msg %}
-      <div id="loginmsg">
-	 
-		{{ msg }}
-	 
-	  </div>
+    {% if msg %}
+      <div id="loginmsg" class="alert alert-danger">
+        {{ msg }}
+      </div>
     {% endif %}
-		
-		<form action="login" method="POST">
-			
-			Email:<br>
-			<input type="text" name="email" /><br><br>
-			
-			Password:<br>
-			<input type="password" name="password" /><br><br>
-			
-			
-			<input type="submit" value="Login"/>
-			
-		</form>
+    
+    <form action="login" method="POST" class="container">
+        <div class="form-group">
+            <label for="email" class="jiggle">Email:</label>
+            <input type="text" class="form-control" name="email" id="email">
+        </div>
+        
+        <div class="form-group">
+            <label for="password" class="jiggle">Password:</label>
+            <input type="password" class="form-control" name="password" id="password">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+
+    <script>
+      function moveForm() {
+		var form = document.querySelector('.container');
+		var formRect = form.getBoundingClientRect();
+		var maxWidth = Math.floor(window.innerWidth * 0.5) - formRect.width;
+		var maxHeight = Math.floor(window.innerHeight * 0.5) - formRect.height;
+		var x = Math.floor(Math.random() * maxWidth);
+		var y = Math.floor(Math.random() * maxHeight);
+		x = Math.max(x, 0);  // prevent x from being negative
+		y = Math.max(y, 0);  // prevent y from being negative
+		x += Math.floor(window.innerWidth * 0.25);  // center the form horizontally
+		y += Math.floor(window.innerHeight * 0.25);  // center the form vertically
+		form.style.left = x + 'px';
+		form.style.top = y + 'px';
+		}
+
+
+
+      setInterval(moveForm, 3000);  // update form position every 3 seconds
+    </script>
 {% endblock %}
