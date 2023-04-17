@@ -2,7 +2,7 @@ body {
 	font-family: Arial, Helvetica, sans-serif;
 	color:#484747;
 	font-size: 30px;
-	background-color: blue;
+	background-color: rgb(175, 175, 234);
   }
   
   .error_text {
@@ -59,7 +59,7 @@ body {
   }
   
   .btn:hover {
-	background-image: linear-gradient(to bottom right, #61affe, #f3afdf);
+	background-image: linear-gradient(to bottom right, #59738c, #f3afdf);
 	box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.2);
 	transform: scale(1.1);
   }

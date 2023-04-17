@@ -23,7 +23,7 @@ sess.init_app(app)
 #Basic root route - show the word 'homepage'
 @app.route('/')  #route name
 def home(): #view function
-    return render_template('testPage2.html', title='Home')
+    return render_template('editor.html', title='Home')
     #return 'homepage'
 
 @app.context_processor
@@ -153,6 +153,8 @@ def generateBook():
 
     # Return the generated list of subtitles
     return render_template('generated_book.html', text_output=text_output)
+
+
 
 
 @app.route('/login',methods = ['GET','POST'])

@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div style="padding: 20px; background-color: #f2f2f2; border-radius: 10px;">
+    <div style="padding: 30px; background-color: #f2f2f2; border-radius: 15px;">
         {% if msg %}
-            {{ msg }}
+            <p style="font-size: 18px; line-height: 1.5em;">{{ msg }}</p>
         {% else %}
             <form method="POST" action="/generateBook">
-                <label for="book_description" style="color: orange; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Describe a book you want!</label>
-                <input type="text" id="book_description" name="prompt" placeholder="The ancient book of eggnog." style="font-size: 12px; width: 400px;">
-                <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: black; border: white; border-radius: 115px; font-size: 16px; cursor: pointer;">Generate Book</button>
+                <label for="book_description" style="color: rgb(25, 0, 255); font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Describe a book you want!</label>
+                <input type="text" id="book_description" name="prompt" placeholder="The ancient book of eggnog." style="font-size: 24px; width: 500px;">
+                <button type="submit" style="padding: 15px 30px; background-color: #4CAF50; color: black; border: white; border-radius: 150px; font-size: 20px; cursor: pointer;">Generate Book</button>
             </form>
         {% endif %}
     </div>
     <form method="POST" action ="/login">
-        <button style="position: absolute; top: 20px; right: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;" action="/login">Login</button>
+        <button style="position: absolute; top: 30px; right: 30px; padding: 15px 30px; background-color: #4CAF50; color: white; border: none; border-radius: 7.5px; font-size: 20px; cursor: pointer;" action="/login">Login</button>
     </form>
 {% endblock %}
