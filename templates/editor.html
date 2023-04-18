@@ -6,22 +6,22 @@
             <p style="font-size: 18px;">{{ item.description }}</p>
         </div>
     {% endfor %}
-    <form method="POST" action="/generateBook">
+    <form method="POST" action="/generateBook" class="generate-book-form" style="position: relative;">
         <label for="book_description" style="color: rgb(58, 47, 28); font-size: 18px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Describe a book you want!</label>
         <input type="text" id="book_description" name="prompt" placeholder="The ancient book of eggnog." style="font-size: 16px; width: 600px;">
-        <button type="submit" style="padding: 20px 40px; background-color: #4CAF50; color: black; border: white; border-radius: 115px; font-size: 24px; cursor: pointer;">Generate Book</button>
+        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: black; border: white; border-radius: 115px; font-size: 24px; cursor: pointer;">Generate Book</button>
+    </form>
+    <form method="POST" action="/addTreeNode" class="add-tree-node-form" style="position: relative; top: -50px;">
+        <label for="node_label" style="color: rgb(58, 47, 28); font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Node Label:</label>
+        <input type="text" id="node_label" name="node_label" placeholder="Enter node label" style="font-size: 14px; width: 300px;">
+        <label for="node_data" style="color: rgb(58, 47, 28); font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Node Data:</label>
+        <input type="text" id="node_data" name="node_data" placeholder="Enter node data" style="font-size: 14px; width: 300px;">
+        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: black; border: white; border-radius: 50px; font-size: 16px; cursor: pointer;">Add TreeNode</button>
     </form>
     <form method="POST" action ="/login">
         <button style="position: absolute; top: 40px; right: 40px; padding: 20px 40px; background-color: #4CAF50; color: white; border: none; border-radius: 10px; font-size: 24px; cursor: pointer;" action="/login">Login</button>
     </form>
-    <form method="POST" action="/addTreeNode">
-        <label for="node_label" style="color: rgb(58, 47, 28); font-size: 18px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Node Label:</label>
-        <input type="text" id="node_label" name="node_label" placeholder="Enter node label" style="font-size: 16px; width: 600px;">
-        <label for="node_data" style="color: rgb(58, 47, 28); font-size: 18px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Node Data:</label>
-        <input type="text" id="node_data" name="node_data" placeholder="Enter node data" style="font-size: 16px; width: 600px;">
-        <button type="submit" style="padding: 20px 40px; background-color: #4CAF50; color: black; border: white; border-radius: 115px; font-size: 24px; cursor: pointer;">Add TreeNode</button>
+    <form method="POST" action="/readTreeNode" class="read-tree-node-form" style="position: relative; top: -50px;">
+        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: black; border: white; border-radius: 50px; font-size: 16px; cursor: pointer;">Read TreeNodes</button>
     </form>
 {% endblock %}
-
-
-

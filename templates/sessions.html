@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <ul>
+        {% for session in sessions %}
+            <div> <a href="manage?pkval={{ session.id }}">{{ session.id }}</a> {{ session.name }} </div>
+        {% endfor %}
+    </ul>
+{% endblock %}
+

@@ -7,6 +7,7 @@ from user import user
 import mysecrets
 import time
 import openai
+from treeNode import tree
 
 #create Flask app instance
 app = Flask(__name__,static_url_path='')
@@ -59,7 +60,7 @@ def main():
     if session['user']['role'] == 'admin':
         return render_template('main.html', title='Main menu') 
     else:
-        return render_template('customer_main.html', title='Main menu') 
+        return render_template('user_main.html', title='Main menu') 
 
 @app.route('/users/manage',methods=['GET','POST'])
 def manage_user():
@@ -113,6 +114,13 @@ def manage_user():
         o.getById(pkval)
         return render_template('users/manage.html',obj = o)
 
+#view sessions
+@app.route('/sessions')
+def sessions():
+    if checkSession() == False: 
+        return redirect('/login')
+    return render_template('sessions.html', title='Sessions')
+
 #display form   
 @app.route('/enterName')
 def enterName():
@@ -154,8 +162,32 @@ def generateBook():
     # Return the generated list of subtitles
     return render_template('generated_book.html', text_output=text_output)
 
+@app.route('/addTreeNode', methods=['GET','POST'])
+def addTreeNode():
+    t = tree()
+    ParentNodeID = None
+    NodeLabel = 'book1'
+    NodeData = 'first test of addtreenode route'
+    NodeLevel = '3'
+    t.create_treeNode(ParentNodeID, NodeLabel, NodeData, NodeLevel)
 
+    return render_template('editor.html', t=t)
 
+@app.route('/readTreeNode', methods=['GET','POST'])
+def readTreeNode():
+    t = tree()
+    t.read_treeNodeAll()
+    return render_template('editor.html', t=t)
+
+def updateTreeNode():
+    t = tree()
+    t.update_treeNode()
+    return render_template('editor.html', t=t)
+
+def deleteTreeNode():
+    t = tree()
+    t.delete_treeNode()
+    return render_template('editor.html', t=t)
 
 @app.route('/login',methods = ['GET','POST'])
 def login():
@@ -210,3 +242,5 @@ def checkSession():
   
 if __name__ == '__main__':
    app.run(host='127.0.0.1',debug=True)   
+
+

@@ -37,7 +37,7 @@ class baseObject:
             vals.append(self.data[n][field])
             count +=1
         sql = sql[0:-1] + ') VALUES ('
-        tokens = ("%s," * count)[0:-1]
+        tokens = ("%s," * count)[0:-1] 
         sql += tokens + ');'
         #print(sql,vals)
         self.cur.execute(sql,vals)

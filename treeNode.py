@@ -7,39 +7,58 @@ class tree(baseObject):
     def toList(self):
         l = []
         for row in self.data:
-            s = f"{row['ParentNodeID']} ({row['NodeLabel']} {row['NodeData']} {row['NodeLevel']})"  
+            s = f"{row['ParentNodeID']} ({row['NodeLabel']} {row['NodeData']} {row['NodeLevel']})"
+            # example string
+            # s = "1 (book1 first test of addtreenode route 3)"  
             l.append(s)
         return l
     def create_treeNode(self, ParentNodeID, NodeLabel, NodeData, NodeLevel):
-        self.d['ParentNodeID'] = None
-        self.d['NodeLabel'] = 'book1'
-        self.d['NodeData'] = 'there once was a dog'
-        self.d['NodeLevel'] = '3'
-        t.set(d)
+        t = tree()
+        self.d['ParentNodeID'] = ParentNodeID
+        self.d['NodeLabel'] = NodeLabel
+        self.d['NodeData'] = NodeData
+        self.d['NodeLevel'] = NodeLevel
+        t.set(self.d)
         t.insert()
         print(t.data)
-    def read_treeNode(self, ParentNodeID, NodeLabel, NodeData, NodeLevel):
+    def read_treeNodeByID(self):
+        '''This should populate the page with existing treenode data'''
+        # t = tree()
+        # t.getAll() # get all records
+        # l = t.toList() # convert to list
+        # print(l)
+        # 
+        ## product_index = makeMenu('Select Product', t.toList()) ##(replace with button request with post request)##
+        # print("Here is the stuff:\n")
+        # print(t.data[product_index]['ParentNodeID'])
+        # print(t.data[product_index]['NodeLabel'])
+        # print(t.data[product_index]['NodeData'])
+        # print(t.data[product_index]['NodeLevel'])
+    def read_treeNodeAll(self):
+        '''Read out all of the available treenodes'''
         t = tree()
         t.getAll() # get all records
-        ## product_index = makeMenu('Select Product', t.toList()) ##(replace with button request with post request)##
-        print("Here is the stuff:\n")
-        print(t.data[product_index]['ParentNodeID'])
-        print(t.data[product_index]['NodeLabel'])
-        print(t.data[product_index]['NodeData'])
-        print(t.data[product_index]['NodeLevel'])
-    def update_treeNode(self, ParentNodeID, NodeLabel, NodeData, NodeLevel):
+        l = t.toList() # convert to list
+        return l # return the list
+    def update_treeNode(self, NodeID, NodeLabel, NodeData):
+        '''This will change the specific treenode label and data based on the NodeID given'''
         t = tree()
         t.getAll()
+        # after getting all the nodes, we need to find the node that matches the NodeID
+        # then we need to update the NodeLabel and NodeData
+        
+
         ## product_index = makeMenu('Select Book', t.toList()) ##(replace with button request with post request)##
-        print("t.data!!! :", t.data)
-        p_index = t.data[product_index]['NodeID']
-        print(f"product index: {product_index}")
-        t.data[product_index]['ParentNodeID'] = None
-        t.data[product_index]['NodeLabel'] = 'bookvygt6ty'
-        t.data[product_index]['NodeData'] = 'this time the dog chased the cat' 
-        t.data[product_index]['NodeLevel'] = '4'
+
+        # print("t.data!!! :", t.data)
+        # p_index = t.data[product_index]['NodeID']
+        # print(f"product index: {product_index}")
+        # t.data[product_index]['ParentNodeID'] = None
+        # t.data[product_index]['NodeLabel'] = 'bookvygt6ty'
+        # t.data[product_index]['NodeData'] = 'this time the dog chased the cat' 
+        # t.data[product_index]['NodeLevel'] = '4'
         t.update(product_index)
-    def delete_treeNode(self, ParentNodeID, NodeLabel, NodeData, NodeLevel):
+    def delete_treeNode(self, NodeID):
         t = tree()
         t.getAll()
         ##product_index = makeMenu('Select Product', t.toList())  ##(replace with button request with post request)##

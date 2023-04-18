@@ -6,7 +6,7 @@ class user(baseObject):
     def __init__(self):
         """Initialize the user class."""
         self.setup('jakirab_sofia_users')
-        self.roles = [{'value':'admin','text':'admin'},{'value':'customer','text':'customer'}]
+        self.roles = [{'value':'admin','text':'admin'},{'value':'user','text':'user'}]
     def hashPassword(self,pw):
         """Hash the password in order to store it in the database."""
         pw = pw+'xyz'

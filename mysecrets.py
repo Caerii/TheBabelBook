@@ -1,5 +1,0 @@
-db_host = 'mysql.clarksonmsda.org'
-db_user = 'is437'
-db_passwd = 'is437clarkson'
-db_name = 'is437'
-OPENAI_API_KEY = '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'
