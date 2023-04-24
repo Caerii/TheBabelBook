@@ -3,3 +3,4 @@ mysecrets.py
 __pycache__/user.cpython-311.pyc
 flask_session/2029240f6d1128be89ddc32729463129
 flask_session/b4e0dd3842b3e2725a7356a24ed80eb5
+*.pyc
