@@ -72,7 +72,7 @@ def manage_user():
     # o.attachRelated('location',l)
 
 
-    action = request.args.get('action')
+    action = request.args.get('action') 
     pkval = request.args.get('pkval')
     if action is not None and action == 'delete':
         o.deleteById(request.args.get('pkval'))
@@ -162,6 +162,29 @@ def generateBook():
     # Return the generated list of subtitles
     return render_template('generated_book.html', text_output=text_output)
 
+@app.route('/editor', methods=['GET','POST'])
+def editor(ParentNodeID=None):
+    t = tree()
+
+    action = request.args.get('action') 
+    pkval = request.args.get('pkval')
+
+    if action is not None and action == 'addTreeNode':
+        ParentNodeID = request.args.get('ParentNodeID')
+        # ParentNodeID = request.form.get('ParentNodeID')
+        NodeLabel = request.form.get('node_label')
+        NodeData = request.form.get('node_data')
+        NodeLevel = '1'
+        # t.data
+        t.create_treeNode(ParentNodeID, NodeLabel, NodeData, NodeLevel)
+        # return render_template('editor.html', tree=t)
+        return redirect(url_for('editor', ParentNodeID=ParentNodeID))
+    if action is not None and action == 'readTreeNode':
+        # t.read_treeNodeAll()
+        t.read_treenodeChildren(1)
+        return render_template('editor.html', tree=t)
+    return render_template('editor.html', tree=t, ParentNodeID=ParentNodeID)
+
 @app.route('/addTreeNode', methods=['GET','POST'])
 def addTreeNode():
     t = tree()
@@ -175,8 +198,11 @@ def addTreeNode():
 
 @app.route('/readTreeNode', methods=['GET','POST'])
 def readTreeNode():
+    """Based on the nodeID, list all the children of that nodeID"""
     t = tree()
-    t.read_treeNodeAll()
+    # t.read_treeNodeAll()
+    t.read_treenodeChildren(1)
+    # t.read_treeNodeByID(1)
     return render_template('editor.html', t=t)
 
 def updateTreeNode():

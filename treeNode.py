@@ -7,7 +7,7 @@ class tree(baseObject):
     def toList(self):
         l = []
         for row in self.data:
-            s = f"{row['ParentNodeID']} ({row['NodeLabel']} {row['NodeData']} {row['NodeLevel']})"
+            s = f"{row['ParentNodeID']}~{row['NodeID']}~{row['NodeLabel']}~{row['NodeData']}~{row['NodeLevel']}"
             # example string
             # s = "1 (book1 first test of addtreenode route 3)"  
             l.append(s)
@@ -21,9 +21,11 @@ class tree(baseObject):
         t.set(self.d)
         t.insert()
         print(t.data)
-    def read_treeNodeByID(self):
+    def read_treeNodeByID(self, NodeID):
         '''This should populate the page with existing treenode data'''
-        # t = tree()
+        t = tree()
+        t.getByField('NodeID', NodeID)
+        return t.data
         # t.getAll() # get all records
         # l = t.toList() # convert to list
         # print(l)
@@ -34,6 +36,28 @@ class tree(baseObject):
         # print(t.data[product_index]['NodeLabel'])
         # print(t.data[product_index]['NodeData'])
         # print(t.data[product_index]['NodeLevel'])
+    def read_treenodeChildren(self, ParentNodeID):
+        '''This should populate the page with existing treenode data'''
+        t = tree()
+        t.getAll()
+        l = t.toList()
+        childList = []
+        # for all the nodes in the list, only show the ones with the chosen parent node id
+        # if the parent node id is none, then we need to get all the nodes that have a parent node id of none
+        # go through the list and find all the
+        for row in l:
+            cols = row.split('~')
+            currentParentNode = cols[0] # this is the parent node id
+            if currentParentNode == 'None':
+                pass
+            else:
+                if int(currentParentNode) == ParentNodeID:
+                    # print(cols[1:4])
+                    childElement = cols[1:4]
+                    childList.append(childElement)
+        print(childList)
+        return childList
+
     def read_treeNodeAll(self):
         '''Read out all of the available treenodes'''
         t = tree()
