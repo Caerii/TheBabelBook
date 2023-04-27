@@ -24,7 +24,7 @@ sess.init_app(app)
 #Basic root route - show the word 'homepage'
 @app.route('/')  #route name
 def home(): #view function
-    return render_template('editor.html', title='Home')
+    return render_template('main.html', title='Home')
     #return 'homepage'
 
 @app.context_processor
@@ -163,57 +163,54 @@ def generateBook():
     return render_template('generated_book.html', text_output=text_output)
 
 @app.route('/editor', methods=['GET','POST'])
-def editor(ParentNodeID=None):
+@app.route('/editor/<int:ParentNodeID>&<int:NodeID>')
+def editor(ParentNodeID=0, NodeID=1):
     t = tree()
+    print("Starting ParentNodeID",ParentNodeID)
+    print("Start NodeID",NodeID)
 
-    action = request.args.get('action') 
-    pkval = request.args.get('pkval')
-
+    action = request.args.get('action')
+    
     if action is not None and action == 'addTreeNode':
-        ParentNodeID = request.args.get('ParentNodeID')
-        # ParentNodeID = request.form.get('ParentNodeID')
         NodeLabel = request.form.get('node_label')
         NodeData = request.form.get('node_data')
-        NodeLevel = '1'
-        # t.data
-        t.create_treeNode(ParentNodeID, NodeLabel, NodeData, NodeLevel)
-        # return render_template('editor.html', tree=t)
-        return redirect(url_for('editor', ParentNodeID=ParentNodeID))
-    if action is not None and action == 'readTreeNode':
-        # t.read_treeNodeAll()
-        t.read_treenodeChildren(1)
+        # grab the parent args and use it to create the child
+        ParentIDURL = ParentNodeID if request.args.get('parentid') is None else request.args.get('parentid')
+        print("ParentIDURL",ParentIDURL)
+        NodeLevel = '1' # default value before we add a counter to the tree
+        tchild = tree() # must create new child node
+        tchild.create_treeNode(ParentIDURL, NodeLabel, NodeData, NodeLevel) # fill child with data from form
+        time.sleep(2)
+        # grab the data of the tchild
+        test = t.data[0]['NodeID']
+        #print(test)
+        return render_template('editor.html', tree=t, nodeid=test,parentid=ParentIDURL)
+        
+    if ParentNodeID != 0:
+        NodeID = request.args.get('nodeid') # grab the nodeid from the url
+        ParentNodeID = request.args.get('parentid') # grab the parentid from the url
+        print("NodeID",NodeID)
+        print("ParentNodeID",ParentNodeID)
+        childList = t.read_treenodeChildren(NodeID) # read all the children of the current node we are on
+        # print(list)
+        return render_template('editor.html', tree=t, data=t.data)
+
+    childList = t.read_treenodeChildren(NodeID) # read all the children of the current node we are on
+
+    if (request.args.get('nodeid')) is not None: # this will update the nodeid if we are on a child node
+        if(int(request.args.get('nodeid')) > 1):
+            NodeID = (int)(request.args.get('nodeid')) # grab the nodeid from the url
+            print("NodeID From Args",NodeID)
+            t.read_treenodeChildren(NodeID)
+            return render_template('editor.html', tree=t, data=t.data)
+
+    if action is not None and action == 'deleteTreeNode':
+        DeleteNodeID = request.form.get('node_to_delete') #this is the nodeID of the node to delete
+        t.delete_treeNode(DeleteNodeID)
+        time.sleep(2)
         return render_template('editor.html', tree=t)
-    return render_template('editor.html', tree=t, ParentNodeID=ParentNodeID)
+    return render_template('editor.html', tree=t, data=t.data)
 
-@app.route('/addTreeNode', methods=['GET','POST'])
-def addTreeNode():
-    t = tree()
-    ParentNodeID = None
-    NodeLabel = 'book1'
-    NodeData = 'first test of addtreenode route'
-    NodeLevel = '3'
-    t.create_treeNode(ParentNodeID, NodeLabel, NodeData, NodeLevel)
-
-    return render_template('editor.html', t=t)
-
-@app.route('/readTreeNode', methods=['GET','POST'])
-def readTreeNode():
-    """Based on the nodeID, list all the children of that nodeID"""
-    t = tree()
-    # t.read_treeNodeAll()
-    t.read_treenodeChildren(1)
-    # t.read_treeNodeByID(1)
-    return render_template('editor.html', t=t)
-
-def updateTreeNode():
-    t = tree()
-    t.update_treeNode()
-    return render_template('editor.html', t=t)
-
-def deleteTreeNode():
-    t = tree()
-    t.delete_treeNode()
-    return render_template('editor.html', t=t)
 
 @app.route('/login',methods = ['GET','POST'])
 def login():

@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-    {% for item in data %}
+    <!-- {% for item in data %}
         <div style="padding: 40px; background-color: #F2F2F2; border-radius: 20px; margin-bottom: 40px;">
             <h3 style="font-size: 24px;">{{ item.title }}</h3>
             <p style="font-size: 18px;">{{ item.description }}</p>
         </div>
-    {% endfor %}
+    {% endfor %} -->
     <div>
         <form method="POST" action="/generateBook" class="generate-book-form" style="position: relative;">
             <label for="book_description" style="color: rgb(58, 47, 28); font-size: 18px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Describe a book you want!</label>
@@ -15,8 +15,7 @@
     </div>
     
     <div>
-        
-        <form method="POST" action="/editor?action=addTreeNode" class="add-tree-node-form" style="position: relative; top: 50px;">
+        <form method="POST" action="/editor?action=addTreeNode&nodeid={{ nodeid }}&parentid={{ parentid }}" class="add-tree-node-form" style="position: relative; top: 50px;">
             <label for="node_label" style="color: rgb(58, 47, 28); font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Node Label:</label>
             <input type="text" id="node_label" name="node_label" placeholder="Enter node label" style="font-size: 14px; width: 300px;">
             <label for="node_data" style="color: rgb(58, 47, 28); font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Node Data:</label>
@@ -28,7 +27,27 @@
     <form method="POST" action ="/login">
         <button style="position: absolute; top: 40px; right: 40px; padding: 20px 40px; background-color: #4CAF50; color: white; border: none; border-radius: 10px; font-size: 24px; cursor: pointer;" action="/login">Login</button>
     </form>
-    <form method="POST" action="/editor?action=readTreeNode" class="read-tree-node-form" style="position: relative; top: 150px;">
-        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: black; border: white; border-radius: 50px; font-size: 16px; cursor: pointer;">Read TreeNodes</button>
+    <form method="POST" action="/editor?action=deleteTreeNode" class="delete-tree-node-form" style="position: relative; top: 25px;">
+        <label for="node_to_delete" style="color: rgb(58, 47, 28); font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Select a node to delete:</label>
+        <select id="node_to_delete" name="node_to_delete" style="font-size: 14px; width: 300px;">
+            {% for child in tree.children %}
+                <option value="{{ child[1] }}">{{ child[1] }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: black; border: white; border-radius: 50px; font-size: 16px; cursor: pointer;">Delete TreeNode</button>
     </form>
+
+    {% if tree.data|default([])|length > 0 and tree.data[0]['NodeLabel'] %}
+    <div>
+        <b>{{ tree.data[0]['NodeLabel'] }}</b> <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{{ tree.data[0]['NodeData'] }} 
+    {% endif %}
+    </div>
+
+    
+    <br>
+    {% for child in tree.children  %}
+    <div> <a href="/editor?parentid={{ child[0] }}&nodeid={{ child[1] }}">{{ child[1] }}</a> <b>{{ child[2] }}</b> {{ child[3] }} </div>
+    {% endfor %}
+    
 {% endblock %}
