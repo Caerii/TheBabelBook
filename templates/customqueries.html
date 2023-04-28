@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form method="POST" action="/customqueries?action=numberOfNodes" class="numchild-form" style="position: relative; top: 25px;">
+    <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: black; border: white; border-radius: 50px; font-size: 16px; cursor: pointer;">How Many Nodes In Tree?</button>
+
+</form>
+
+{{ totalNodeCount }}
+
+{% endblock %}

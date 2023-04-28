@@ -162,29 +162,53 @@ def generateBook():
     # Return the generated list of subtitles
     return render_template('generated_book.html', text_output=text_output)
 
+
+@app.route('/customqueries', methods=['GET','POST'])
+def customqueries():
+    t = tree()
+
+    action = request.args.get('action')
+
+    #if action is not None and action == 'showChildListSizeLargerThan':
+        #t.showChildListSizeLargerThan()
+        #return render_template('custom_queries.html',msg="WHATEVERYOUWANT")
+    
+    if action is not None and action == 'numberOfNodes':
+        nodeCount = t.howManyNodes()
+        return render_template('customqueries.html', totalNodeCount = nodeCount)
+
+    return render_template('customqueries.html')
+
+
+
+
 @app.route('/editor', methods=['GET','POST'])
 @app.route('/editor/<int:ParentNodeID>&<int:NodeID>')
 def editor(ParentNodeID=0, NodeID=1):
     t = tree()
-    print("Starting ParentNodeID",ParentNodeID)
+    print("Start ParentNodeID",ParentNodeID)
     print("Start NodeID",NodeID)
 
     action = request.args.get('action')
+    ParentIDURL = ParentNodeID if request.args.get('nodeid') is None else request.args.get('nodeid')
     
     if action is not None and action == 'addTreeNode':
         NodeLabel = request.form.get('node_label')
         NodeData = request.form.get('node_data')
         # grab the parent args and use it to create the child
-        ParentIDURL = ParentNodeID if request.args.get('parentid') is None else request.args.get('parentid')
+        
         print("ParentIDURL",ParentIDURL)
         NodeLevel = '1' # default value before we add a counter to the tree
         tchild = tree() # must create new child node
-        tchild.create_treeNode(ParentIDURL, NodeLabel, NodeData, NodeLevel) # fill child with data from form
+        tchild.create_treeNode(NodeID, NodeLabel, NodeData, NodeLevel) # fill child with data from form
         time.sleep(2)
         # grab the data of the tchild
-        test = t.data[0]['NodeID']
-        #print(test)
-        return render_template('editor.html', tree=t, nodeid=test,parentid=ParentIDURL)
+        nodeidchild = tchild.data[0]['NodeID']
+        nodeidparent = tchild.data[0]['ParentNodeID']
+        print("add new child nodeidparent",nodeidparent)
+        print("add new child nodeidchild",nodeidchild)
+        # return render_template('editor.html', tree=t, nodeid=nodeidchild,parentid=ParentIDURL)
+        return redirect(url_for('editor', ParentNodeID=nodeidparent, NodeID=nodeidchild))
         
     if ParentNodeID != 0:
         NodeID = request.args.get('nodeid') # grab the nodeid from the url
@@ -209,6 +233,16 @@ def editor(ParentNodeID=0, NodeID=1):
         t.delete_treeNode(DeleteNodeID)
         time.sleep(2)
         return render_template('editor.html', tree=t)
+
+    if action is not None and action == 'exportTreeNode':
+        currentNodeID = t.data[0]['NodeID'] #grab the nodeid
+        t.export_treeNode(1) # export the tree to a string
+        stringList = t.exportString # grab the string
+        # print out all the values in a for loop
+        for i in range(len(stringList)):
+            print(stringList[i])
+        return render_template('export.html', tree=t, stringList=stringList)
+    
     return render_template('editor.html', tree=t, data=t.data)
 
 
@@ -265,5 +299,7 @@ def checkSession():
   
 if __name__ == '__main__':
    app.run(host='127.0.0.1',debug=True)   
+
+
 
 

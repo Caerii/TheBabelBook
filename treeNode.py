@@ -5,6 +5,7 @@ class tree(baseObject):
         self.setup('jakirab_sofia_treenode')
         self.d = {}
         self.children = []
+        self.exportString = []
     def toList(self):
         l = []
         for row in self.data:
@@ -18,6 +19,9 @@ class tree(baseObject):
         self.data = [] # for sql
     def create_treeNode(self, ParentNodeID, NodeLabel, NodeData, NodeLevel):
         self.clear()
+        print("creating with ParentNodeID",ParentNodeID)
+        if ParentNodeID == '':
+            ParentNodeID = 0
         self.d['ParentNodeID'] = ParentNodeID
         self.d['NodeLabel'] = NodeLabel
         self.d['NodeData'] = NodeData
@@ -89,4 +93,75 @@ class tree(baseObject):
         print("Deleted node with id: " + str(NodeID))
 
 
+    def export_treeNode(self, starterID=None, childList=None, tabMultiplier=0):
+        if starterID == 1: # if it is the root node, then add it to the string
+            nodeLabel = self.data[0]['NodeLabel'] #grab the node label
+            nodeData = self.data[0]['NodeData'] #grab the node data
+            string = nodeLabel + '~' + nodeData + '\n' # create the string
+            self.exportString.append(string) # add it to the list
+            childList = self.read_treenodeChildren(starterID) # get the children of the first node, as the base case
+        if childList is not None: # if the child list is not none, then we can explore it
+            for child in childList: 
+                string =  '         '*tabMultiplier + child[2] + '~' + child[3]
+                self.exportString.append(string)
+                nextChildNodeID = (int)(child[1])
+                nextChildList = self.read_treenodeChildren(nextChildNodeID)
+                if nextChildList == []: # if it is empty, then do not explore it
+                    pass
+                self.export_treeNode(childList=nextChildList, tabMultiplier=tabMultiplier+1) # explore the next child list
+    # CUSTOM SELECT QUERIES BELOW ##############################################
         
+    def showChildListSizeLargerThan(self, size):
+        '''This will show the child list size larger than the given integer number'''
+        self.read_treeNodeChildren(1) 
+        # if child in treeNodeChildren > 
+
+        # call read_treenodechildren(1) to get everything
+        # you will get a childlist
+        # use a for loop to go through all the childlists, and keep a list [] of the ones that are larger than the given integer number
+        # the list will just be the node ids that have childlists with lengths longer than the given integer number
+        # []
+        pass
+        # basically you provide a number and it will show all the nodes that have a child list size larger than that number
+    def showChildListSizeSmallerThan(self, size):
+        '''This will show the child list size smaller than the given integer number'''
+        pass
+        # basically you provide a number and it will show all the nodes that have a child list size smaller than that number
+    def export_treeNodePruned(self, starterID=None, childList=None, tabMultiplier=0, howManyLayersDeep=1):
+        if starterID == 1: # if it is the root node, then add it to the string
+            nodeLabel = self.data[0]['NodeLabel'] #grab the node label
+            nodeData = self.data[0]['NodeData'] #grab the node data
+            string = nodeLabel + '~' + nodeData + '\n' # create the string
+            self.exportString.append(string) # add it to the list
+            childList = self.read_treenodeChildren(starterID) # get the children of the first node, as the base case
+        if childList is not None: # if the child list is not none, then we can explore it
+            for child in childList: 
+                string =  '         '*tabMultiplier + child[2] + '~' + child[3]
+                self.exportString.append(string)
+                nextChildNodeID = (int)(child[1])
+                nextChildList = self.read_treenodeChildren(nextChildNodeID)
+                if nextChildList == []: # if it is empty, then do not explore it
+                    pass
+                self.export_treeNode(childList=nextChildList, tabMultiplier=tabMultiplier+1)
+        # you start at a a counter of howManyLayersDeep
+        # everytime you call the function recursively, you subtract 1 from howManyLayersDeep
+        # if howManyLayersDeep is 0, then you stop and do not go deeper
+        # if howManyLayersDeep is 1, then you go one layer deep
+        # if howManyLayersDeep is 2, then you go two layers deep, etc
+
+    def searchKeywordInAllNodes(self, keywordString):
+        '''Return a list of nodes that contain the keyword string'''
+        pass
+
+    def howManyNodes(self):
+        '''Return the number of nodes in the tree'''
+        nodes = self.read_treeNodeAll()
+        print(len(nodes))
+        return len(nodes)
+
+    def howManyChildren(self,nodeID):
+        '''Return the number of children of a given node'''
+        
+        #use read_treeNodeChildren to get all of the data
+        #
+        pass
