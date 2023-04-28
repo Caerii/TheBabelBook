@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <div class="mt-4">
+            <form method="POST" action="/login">
+                <button class="btn btn-primary" type="submit">Login</button>
+            </form>
+        </div>
+
+        <form method="POST" action="/generateBook" class="generate-book-form">
+            <label for="book_description" class="form-label">Describe a book you want!</label>
+            <input type="text" id="book_description" name="prompt" class="form-control" placeholder="The ancient book of eggnog.">
+            <button type="submit" class="btn btn-primary">Generate Book</button>
+        </form>
+        
+        <form method="POST" action="/editor?action=addTreeNode&nodeid={{ NodeID }}&parentid={{ ParentNodeID }}" class="add-tree-node-form mt-4">
+            <div class="mb-3">
+                <label for="node_label" class="form-label">Node Label:</label>
+                <input type="text" id="node_label" name="node_label" class="form-control" placeholder="Enter node label">
+            </div>
+            <div class="mb-3">
+                <label for="node_data" class="form-label">Node Data:</label>
+                <input type="text" id="node_data" name="node_data" class="form-control" placeholder="Enter node data">
+            </div>
+            <button type="button" class="btn btn-primary add-tree-node-btn">Add TreeNode</button>
+        </form>
+        
+        <form method="POST" action="/editor?action=deleteTreeNode" class="delete-tree-node-form mt-4">
+            <div class="mb-3">
+                <label for="node_to_delete" class="form-label">Select a node to delete:</label>
+                <select id="node_to_delete" name="node_to_delete" class="form-control">
+                    {% for child in tree.children %}
+                        <option value="{{ child[1] }}">{{ child[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary delete-tree-node-btn">Delete TreeNode</button>
+        </form>
+        
+        <form method="POST" action="/editor?action=exportTreeNode" class="export-tree-node-form mt-4">
+            <button type="button" class="btn btn-primary export-tree-node-btn">Export TreeNode</button>
+        </form>
+        
+        {% if tree.data|default([])|length > 0 %}
+            {% if NodeID is none %}
+                <div>
+                    <b>{{ tree.data[0]['NodeLabel'] }}</b> <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;{{ tree.data[0]['NodeData'] }} 
+                </div>
+            {% else %}
+                {% for node in tree.data %}
+                    {% if node['NodeID'] == NodeID %}
+                        <i class="small">Current Node -----------------------------------------------------------------------------------------------</i> 
+                        <div> <a href="/editor?ParentNodeID={{ tree.data[0]['ParentNodeID'] }}&NodeID={{ tree.data[0]['NodeID'] }}">{{ node['NodeID'] }}</a>
+                            <b>{{ node['NodeLabel'] }}</b> <br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;{{ node['NodeData'] }} 
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    
+        <br>
+        <i class="small"> List of Children of Node # {{request.args.get('NodeID')}} -----------------------------------------------------------------------------------------------</i>
+        <br>
+        <br>
+        {% for child in tree.children  %}
+            <div> <a href="/editor?ParentNodeID={{ child[0] }}&NodeID={{ child[1] }}">{{ child[1] }}</a> 
+                <b>{{ child[2] }}</b> <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;{{ child[3] }} 
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Add event listener to the "Add TreeNode" button
+        const addTreeNodeForm = document.querySelector('.add-tree-node-form');
+        const addTreeNodeBtn = addTreeNodeForm.querySelector('.add-tree-node-btn');
+        addTreeNodeBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const formData = new FormData(addTreeNodeForm);
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', addTreeNodeForm.action);
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        const response = xhr.response;
+                        const parser = new DOMParser();
+                        const newDoc = parser.parseFromString(response, 'text/html');
+                        const newEditor = newDoc.querySelector('.container');
+                        const currentEditor = document.querySelector('.container');
+                        currentEditor.replaceWith(newEditor);
+                    } else {
+                        console.error('Error:', xhr.statusText);
+                    }
+                }
+            };
+            xhr.send(formData);
+        });
+
+        // Add event listener to the "Delete TreeNode" button
+        const deleteTreeNodeForm = document.querySelector('.delete-tree-node-form');
+        const deleteTreeNodeBtn = deleteTreeNodeForm.querySelector('.delete-tree-node-btn');
+        deleteTreeNodeBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const formData = new FormData(deleteTreeNodeForm);
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', deleteTreeNodeForm.action);
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        const response = xhr.response;
+                        const parser = new DOMParser();
+                        const newDoc = parser.parseFromString(response, 'text/html');
+                        const newEditor = newDoc.querySelector('.container');
+                        const currentEditor = document.querySelector('.container');
+                        currentEditor.replaceWith(newEditor);
+                    } else {
+                        console.error('Error:', xhr.statusText);
+                    }
+                }
+            };
+            xhr.send(formData);
+        });
+
+        // Add event listener to the "Export TreeNode" button
+        const exportTreeNodeForm = document.querySelector('.export-tree-node-form');
+        const exportTreeNodeBtn = exportTreeNodeForm.querySelector('.export-tree-node-btn');
+        exportTreeNodeBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const formData = new FormData(exportTreeNodeForm);
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', exportTreeNodeForm.action);
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        const response = xhr.response;
+                        const parser = new DOMParser();
+                        const newDoc = parser.parseFromString(response, 'text/html');
+                        const newExport = newDoc.querySelector('.container');
+                        const currentEditor = document.querySelector('.container');
+                        currentEditor.replaceWith(newExport);
+                    } else {
+                        console.error('Error:', xhr.statusText);
+                    }
+                }
+            };
+            xhr.send(formData);
+        });
+    </script>
+
+{% endblock %}
