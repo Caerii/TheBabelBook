@@ -6,6 +6,18 @@
 
 </form>
 
-{{ totalNodeCount }}
+<div style="position: relative; top: 170px;"> Total Nodes In The Tree: {{ totalNodeCount }} </div>
+
+<form method="POST" action="/customqueries?action=howManyLayersDeep" class="numchild-form" style="position: relative; top: 25px;">
+    <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: black; border: white; border-radius: 50px; font-size: 16px; cursor: pointer;">How Many Layers In Tree?</button>
+
+</form>
+<div style="position: relative; top: 144px;"> Total Layers In The Tree: {{ layersDeep }} </div>
+
+<form method="POST" action="/customqueries?action=numberOfChildren" class="numchild-form" style="position: relative; top: 25px;">
+    <button type="submit" style="padding: 10px 20px; background-color: #4CAF50; color: black; border: white; border-radius: 50px; font-size: 16px; cursor: pointer;">How Many Children In Tree?</button>
+
+</form>
+<div style="position: relative; top: 120px;"> Total Children In The Tree: {{ totalChildCount }} </div>
 
 {% endblock %}

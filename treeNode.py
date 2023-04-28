@@ -127,7 +127,7 @@ class tree(baseObject):
         '''This will show the child list size smaller than the given integer number'''
         pass
         # basically you provide a number and it will show all the nodes that have a child list size smaller than that number
-    def export_treeNodePruned(self, starterID=None, childList=None, tabMultiplier=0, howManyLayersDeep=1):
+    def export_treeNodePruned(self, starterID=None, childList=None, tabMultiplier=0, howManyLayersDeep=None):
         if starterID == 1: # if it is the root node, then add it to the string
             nodeLabel = self.data[0]['NodeLabel'] #grab the node label
             nodeData = self.data[0]['NodeData'] #grab the node data
@@ -135,14 +135,17 @@ class tree(baseObject):
             self.exportString.append(string) # add it to the list
             childList = self.read_treenodeChildren(starterID) # get the children of the first node, as the base case
         if childList is not None: # if the child list is not none, then we can explore it
-            for child in childList: 
+            for child in childList:
+                if howManyLayersDeep is not None and tabMultiplier >= howManyLayersDeep:
+                    return # stop recursion if current depth is greater than or equal to howManyLayersDeep
                 string =  '         '*tabMultiplier + child[2] + '~' + child[3]
                 self.exportString.append(string)
                 nextChildNodeID = (int)(child[1])
                 nextChildList = self.read_treenodeChildren(nextChildNodeID)
                 if nextChildList == []: # if it is empty, then do not explore it
                     pass
-                self.export_treeNode(childList=nextChildList, tabMultiplier=tabMultiplier+1)
+            self.export_treeNodePruned(childList=nextChildList, tabMultiplier=tabMultiplier+1, howManyLayersDeep=howManyLayersDeep)
+
         # you start at a a counter of howManyLayersDeep
         # everytime you call the function recursively, you subtract 1 from howManyLayersDeep
         # if howManyLayersDeep is 0, then you stop and do not go deeper
@@ -159,9 +162,11 @@ class tree(baseObject):
         print(len(nodes))
         return len(nodes)
 
-    def howManyChildren(self,nodeID):
+    def howManyChildren(self, nodeID):
         '''Return the number of children of a given node'''
-        
-        #use read_treeNodeChildren to get all of the data
-        #
-        pass
+        entireNode = self.read_treeNodeByID(nodeID)
+        nodeID = entireNode[0]['NodeID']
+        children = self.read_treenodeChildren(nodeID)
+        print(nodeID)
+        return len(children)
+

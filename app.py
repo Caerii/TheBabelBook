@@ -168,13 +168,19 @@ def customqueries():
 
     action = request.args.get('action')
 
-    #if action is not None and action == 'showChildListSizeLargerThan':
-        #t.showChildListSizeLargerThan()
-        #return render_template('custom_queries.html',msg="WHATEVERYOUWANT")
+    #if action is not None and action == 'howManyLayersDeep':
+        #layersCount = t.export_treeNodePruned()
+        #return render_template('customqueries.html', layersDeep = layersCount)
     
     if action is not None and action == 'numberOfNodes':
         nodeCount = t.howManyNodes()
         return render_template('customqueries.html', totalNodeCount = nodeCount)
+    
+    if action is not None and action == 'numberOfChildren':
+        t.getAll()
+        nodeID = t.data[0]['NodeID']
+        childCount = t.howManyChildren(nodeID)
+        return render_template('customqueries.html', totalChildCount = childCount)
 
     return render_template('customqueries.html')
 
