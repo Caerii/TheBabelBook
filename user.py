@@ -79,4 +79,7 @@ class user(baseObject):
             d['text'] = f"{item['name']} ({item['email']})"
             choices.append(d)
         return choices
+    def attachRelated(self,treename,tree):
+        """Attach treenode data to the user."""
+
     

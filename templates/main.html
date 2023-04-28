@@ -1,17 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Main menu</h2>
-      <div id="menumsg">
-		Hello, {{ me.name }}  ({{ me.email }})
-	  </div>
-	<br><br>
+  <h2>Main menu</h2>
+  <div id="menumsg">
+    Hello, {{ me.name }}  ({{ me.email }})
+  </div>
+  <br><br>
 
-	<a href="/editor">Editor</a><br>
-	<a href="/customqueries">Custom Queries</a><br>
-	<a href="/users/manage">Manage Users</a><br>
-	<a href="#">View Sessions</a><br>
-	<a href="/logout">Logout</a><br>
-	
-	
+  <a href="/editor" class="menu-link">Editor</a><br>
+  <a href="/customqueries" class="menu-link">Custom Queries</a><br>
+  <a href="/users/manage" class="menu-link">Manage Users</a><br>
+  <a href="#" class="menu-link">View Sessions</a><br>
+  <a href="/logout" class="menu-link">Logout</a><br>
+{% endblock %}
+
+{% block style %}
+  <style>
+    /* Apply custom font and background color to body */
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f6f6f6;
+    }
+
+    /* Style menu links */
+    .menu-link {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      color: #fff;
+      background-color: #5f9ea0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s ease-in-out;
+    }
+
+    /* Add hover effect to menu links */
+    .menu-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Add active style to selected menu link */
+    .menu-link.active {
+      background-color: #4d8c8c;
+    }
+
+    /* Style menu message */
+    #menumsg {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+  </style>
 {% endblock %}
