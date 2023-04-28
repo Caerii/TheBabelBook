@@ -182,13 +182,16 @@ def customqueries():
 
 
 @app.route('/editor', methods=['GET','POST'])
-@app.route('/editor/<int:ParentNodeID>&<int:NodeID>')
+@app.route('/editor?<int:ParentNodeID>&<int:NodeID>')
 def editor(ParentNodeID=0, NodeID=1):
     t = tree()
     print("Start ParentNodeID",ParentNodeID)
     print("Start NodeID",NodeID)
 
-    action = request.args.get('action')
+    # action = request.args.get('action')
+    action = request.form.get('action') if request.form.get('action') else request.args.get('action')
+
+    
     # NodeID = NodeID if request.args.get('NodeID') is None else request.args.get('NodeID')
     # make into int
     # NodeID = int(NodeID)
@@ -197,57 +200,65 @@ def editor(ParentNodeID=0, NodeID=1):
     # ParentNodeID = int(ParentNodeID)
     # ParentIDURL = ParentNodeID if request.args.get('nodeid') is None else request.args.get('nodeid')
     
-    if action is not None and action == 'addTreeNode':
-        NodeLabel = request.form.get('node_label')
-        NodeData = request.form.get('node_data')
-        # grab the parent args and use it to create the child
-        
-        print("ParentIDURL",ParentIDURL)
-        NodeLevel = '1' # default value before we add a counter to the tree
-        tchild = tree() # must create new child node
-        tchild.create_treeNode(NodeID, NodeLabel, NodeData, NodeLevel) # fill child with data from form
-        time.sleep(2)
-        # grab the data of the tchild
-        nodeidchild = tchild.data[0]['NodeID']
-        nodeidparent = tchild.data[0]['ParentNodeID']
-        print("add new child nodeidparent",nodeidparent)
-        print("add new child nodeidchild",nodeidchild)
-        # return render_template('editor.html', tree=t, nodeid=nodeidchild,parentid=ParentIDURL)
-        return redirect(url_for('editor', ParentNodeID=nodeidparent, NodeID=nodeidchild))
-        
     if ParentNodeID != 0:
         NodeID = request.args.get('NodeID') # grab the nodeid from the url
         ParentNodeID = request.args.get('ParentNodeID') # grab the parentid from the url
-        # make into int
-        # NodeID = int(NodeID)
-        # ParentNodeID = int(ParentNodeID)
-        print("NodeID",NodeID)
-        print("ParentNodeID",ParentNodeID)
         childList = t.read_treenodeChildren(NodeID) # read all the children of the current node we are on
-        print("ParentNodeID != 0",childList)
         return render_template('editor.html', tree=t, ParentNodeID=ParentNodeID, NodeID=NodeID)
     else:
-        childList = t.read_treenodeChildren(NodeID) # read all the children of the current node we are on
+        childList = t.read_treenodeChildren(NodeID) # read all the children of the current node we are only on the root node
         print("ParentNodeID is 0",childList)
-        # update from url
-        NodeID = request.args.get('NodeID') # grab the nodeid from the url
-        ParentNodeID = request.args.get('ParentNodeID') # grab the parentid from the url
-        print("NodeID from else",NodeID)
-        print("ParentNodeID from else",ParentNodeID)
     
-    NodeID = request.args.get('NodeID') # grab the nodeid from the url
-    ParentNodeID = request.args.get('ParentNodeID') # grab the parentid from the url
+    print("NodeID from before",NodeID)
+    print("ParentNodeID from before",ParentNodeID)
+    NodeID_new = request.args.get('NodeID')
+    if NodeID_new is not None and NodeID_new != '':
+        NodeID = int(NodeID_new)
+
+    ParentNodeID_new = request.args.get('ParentNodeID')
+    if ParentNodeID_new is not None and ParentNodeID_new != '':
+        if ParentNodeID_new == 'None':
+            ParentNodeID_new = 0
+        print("Before int casting",ParentNodeID_new)
+        ParentNodeID = int(ParentNodeID_new)
     print("NodeID from after",NodeID)
     print("ParentNodeID from after",ParentNodeID)
 
-    if (request.args.get('NodeID')) is not None: # this will update the nodeid if we are on a child node
+    if (request.args.get('NodeID')) is not None and request.args.get('NodeID') != '': # this will update the nodeid if we are on a child node
         if(int(request.args.get('NodeID')) >= 1):
+            # ParentNodeID = (int)(request.args.get('ParentNodeID')) # grab the parentid from the url
             NodeID = (int)(request.args.get('NodeID')) # grab the nodeid from the url
+            # print("ParentNodeID From Args line 235",ParentNodeID)
             print("NodeID From Args line 236",NodeID)
-            print("tree.data",t.data)
+            # print("tree.data",t.data[0])
             t.read_treenodeChildren(NodeID)
             return render_template('editor.html', tree=t, ParentNodeID=ParentNodeID, NodeID=NodeID)
 
+    if action is not None and action == 'addTreeNode':
+        print("ADDING NEW TREE NODE!!!!!!!!!")
+        NodeLabel = request.form.get('node_label')
+        NodeData = request.form.get('node_data')
+        # grab the parent args and use it to create the child
+        # print("ParentIDURL",ParentIDURL)
+        NodeLevel = '1' # default value before we add a counter to the tree
+        tchild = tree() # must create new child node
+        print("REQUEST ARGS",request.args)
+        NodeID = request.args.get('nodeid') # grab the nodeid from the url
+        ParentNodeID = request.args.get('parentid') # grab the parentid from the url
+
+        tchild.create_treeNode(NodeID, NodeLabel, NodeData, NodeLevel) # fill child with data from form
+        time.sleep(2)
+        print(tchild.data[0])
+        # grab the data of the tchild
+        nodeidchild = tchild.data[0]['NodeID']
+        nodeidparent = tchild.data[0]['ParentNodeID']
+        ParentNodeID = nodeidparent
+        print("add new child nodeidparent",nodeidparent)
+        print("add new child nodeidchild",nodeidchild)
+        # return render_template('editor.html', tree=t, nodeid=nodeidchild,parentid=ParentIDURL)
+        return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
+        # return render_template('editor.html', tree=t, parentid=ParentNodeID, nodeid=NodeID)
+        
     if action is not None and action == 'deleteTreeNode':
         DeleteNodeID = request.form.get('node_to_delete') #this is the nodeID of the node to delete
         t.delete_treeNode(DeleteNodeID)
@@ -259,10 +270,10 @@ def editor(ParentNodeID=0, NodeID=1):
         t.export_treeNode(1) # export the tree to a string
         stringList = t.exportString # grab the string
         # print out all the values in a for loop
-        for i in range(len(stringList)):
-            print(stringList[i])
+        # for i in range(len(stringList)):
+            # print(stringList[i])
         return render_template('export.html', tree=t, stringList=stringList)
-    
+
     return render_template('editor.html', tree=t, ParentNodeID=ParentNodeID, NodeID=NodeID)
 
 

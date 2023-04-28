@@ -5,16 +5,33 @@
   <div id="menumsg">
     Hello, {{ me.name }}  ({{ me.email }})
   </div>
-  <br><br>
 
-  <a href="/editor" class="menu-link">Editor</a><br>
-  <a href="/customqueries" class="menu-link">Custom Queries</a><br>
-  <a href="/users/manage" class="menu-link">Manage Users</a><br>
-  <a href="#" class="menu-link">View Sessions</a><br>
-  <a href="/logout" class="menu-link">Logout</a><br>
+  <div class="menu-container">
+    <a href="/editor?parentid=None&nodeid=1" class="menu-link">
+      <i class="fas fa-edit"></i>
+      Editor
+    </a>
+    <a href="/customqueries" class="menu-link">
+      <i class="fas fa-search"></i>
+      Custom Queries
+    </a>
+    <a href="/users/manage" class="menu-link">
+      <i class="fas fa-user-cog"></i>
+      Manage Users
+    </a>
+    <a href="#" class="menu-link">
+      <i class="fas fa-calendar-alt"></i>
+      View Sessions
+    </a>
+    <a href="/logout" class="menu-link">
+      <i class="fas fa-sign-out-alt"></i>
+      Logout
+    </a>
+  </div>
 {% endblock %}
 
 {% block style %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <style>
     /* Apply custom font and background color to body */
     body {
@@ -22,28 +39,48 @@
       background-color: #f6f6f6;
     }
 
+    /* Style menu container */
+    .menu-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
     /* Style menu links */
     .menu-link {
-      display: inline-block;
-      margin-bottom: 10px;
-      padding: 10px 20px;
-      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
       text-decoration: none;
       color: #fff;
       background-color: #5f9ea0;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       transition: all 0.2s ease-in-out;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
     }
 
     /* Add hover effect to menu links */
     .menu-link:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     }
 
     /* Add active style to selected menu link */
     .menu-link.active {
       background-color: #4d8c8c;
+    }
+
+    /* Style menu icons */
+    .menu-link i {
+      font-size: 48px;
+      margin-right: 10px;
     }
 
     /* Style menu message */

@@ -13,7 +13,7 @@
             <button type="submit" class="btn btn-primary">Generate Book</button>
         </form>
         
-        <form method="POST" action="/editor?action=addTreeNode&NodeID={{ nodeid }}&ParentNodeID={{ parentid }}" class="add-tree-node-form mt-4">
+        <form method="POST" action="/editor?action=addTreeNode&nodeid={{ NodeID }}&parentid={{ ParentNodeID }}" class="add-tree-node-form mt-4">
             <div class="mb-3">
                 <label for="node_label" class="form-label">Node Label:</label>
                 <input type="text" id="node_label" name="node_label" class="form-control" placeholder="Enter node label">
@@ -32,7 +32,7 @@
                 <label for="node_to_delete" class="form-label">Select a node to delete:</label>
                 <select id="node_to_delete" name="node_to_delete" class="form-control">
                     {% for child in tree.children %}
-                        <option value="{{ child[1] }}">{{ child[2] }}</option>
+                        <option value="{{ child[1] }}">{{ child[1] }}</option>
                     {% endfor %}
                 </select>
             </div>
