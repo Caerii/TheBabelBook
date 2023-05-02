@@ -10,6 +10,13 @@ class tree(baseObject):
         self.d = {}
         self.children = []
         self.exportString = []
+        self.writerPersonality = 'A wonderful AI writer named Quark who is imaginative, creative, and loves to write stories.'
+    def getPersonality(self):
+        return self.writerPersonality
+
+    def setPersonality(self, personality):
+        self.writerPersonality = personality
+
     def toList(self):
         l = []
         for row in self.data:
@@ -127,10 +134,10 @@ class tree(baseObject):
     #     self.delete_treeNode(NodeID)
 
     def cascadeDelete(self, NodeID):
+        NodeID = int(NodeID)
         '''This will delete all the nodes under the given node id NodeID except for the node itself'''
         # if you are deleting the root node, then you are deleting the whole tree, so we create a new root node for you
-        if NodeID == 1:
-            self.create_treeNode(0, 'root', 'root')
+        
         childList = self.read_treenodeChildren(NodeID)
         print("childList",childList)
         for child in reversed(childList): # go through the list backwards so that the children are deleted first before the parent
@@ -139,12 +146,24 @@ class tree(baseObject):
         print("Deleting all children of node with id: " + str(NodeID))
         self.delete_children(NodeID) # delete all the children of the node
         print("Deleted all children of node with id: " + str(NodeID))
+        # if NodeID == 1:
+            # self.create_treeNode(0, 'root', 'root')
 
     def delete_children(self, NodeID):
         '''This will delete all the children of the given node id NodeID'''
         childList = self.read_treenodeChildren(NodeID)
         for child in childList:
             self.deleteById(child[1])
+
+    def deleteAll(self):
+        self.cascadeDelete(1)
+        print("CASCADE DELETE ALL CHILDREN OF ROOT NODE CHILDREN")
+        self.delete_children(1)
+        print("DELETED ALL CHILDREN OF ROOT NODE")
+
+        print("trying to delete by id 1")
+        self.update_treeNode(1, 'root', 'root')
+        print("Deleted all nodes in the tree and created a new root node")
 
     def getTreeParentIDByNodeID(self, NodeID):
         '''This will return the parent node id of the given node id'''
@@ -163,6 +182,14 @@ class tree(baseObject):
         self.getByField('NodeID', NodeID)
         if self.exists():
             return self.data[0]['NodeLabel']
+        else:
+            return None
+
+    def getTreeNodeDataByNodeID(self, NodeID):
+        '''This will return the node data of the given node id'''
+        self.getByField('NodeID', NodeID)
+        if self.exists():
+            return self.data[0]['NodeData']
         else:
             return None
 
@@ -189,8 +216,8 @@ class tree(baseObject):
         '''This will generate a list of chapters based on the user prompt'''
         
         formatting = "Here is what we have written in the book so far: \n\""
-        prompt = f"Please generate a list of {howManyChapters} chapter subheadings for the book with the description as <{userPrompt}> in a numbered, bulleted list structured as follows:\n \"1. example_subtitle1 \n 2. example_subtitle2\" \n Here are {howManyChapters} new chapters based on the description and written work so far:\n"
-        prompt = formatting + promptSoFar + "\"" + prompt
+        prompt_instructions = f"The personality of the writer should be <{self.writerPersonality}>Please generate a list of {howManyChapters} chapter subheadings for the book with the description as <{userPrompt}> in a numbered, bulleted list structured as follows:\n \"1. example_subtitle1 \n 2. example_subtitle2\" \n Here are {howManyChapters} new chapters based on the description and written work so far:\n"
+        prompt = formatting + promptSoFar + "\"" + prompt_instructions
         
         # Call the OpenAI API with the prompt to generate a list of book subtitles
         # Format the list as "Please generate a list of chapter subheadings for the book with the {user_prompt} in a numbered, bulleted list"
@@ -234,6 +261,37 @@ class tree(baseObject):
             # create node for each chapter
             print("Creating node for chapter: " + chapterList[i])
             self.create_treeNode(ParentNodeID=NodeID, NodeLabel=chapterList[i], NodeData="")
+    
+    def generateNodeWriting(self, user_prompt, openAIKey, promptSoFar, CurrentNodeID):
+        '''This will generate writing for each node'''
+        sentences_long = 5
+        personality_description = "A metamodernist with creative tendencies and a strong sense of self."
+        # grab the node label of the current node
+        NodeLabel = self.getTreeNodeLabelByNodeID(CurrentNodeID)
+        # if there is node data, then add it to the prompt
+        if self.getTreeNodeDataByNodeID(CurrentNodeID) is not None:
+            NodeData = self.getTreeNodeDataByNodeID(CurrentNodeID)
+        formatting = "Here is what we have written in the book so far: \n\""
+        prompt_instructions = f"You are writing a book from the point of view of someone with a personality description of: <{self.writerPersonality}>. The user gave the description of what they wanted to be written as: <{user_prompt}> Please write a paragraph that is {sentences_long} for the following chapter subheading: <" + NodeLabel + ">\n"
+        prompt = formatting + promptSoFar + "\"" + prompt_instructions + NodeData # add any existing node data to the prompt
+
+        # Call the OpenAI API with the prompt to generate a list of book subtitles
+        # Format the list as "Please generate a list of chapter subheadings for the book with the {user_prompt} in a numbered, bulleted list"
+        openai.api_key = openAIKey
+        generated_list = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt,
+            max_tokens=160,
+            n=1,
+            stop=None,
+            temperature=0.9,
+            frequency_penalty=0.5,
+        )
+        text_output = generated_list.choices[0].text
+        print("text_output",text_output)
+
+        return text_output
+
 
     # def generatePromptFromRootToCurrentNode(self, currentNodeID, wholeBook):
     #     '''This will generate a prompt string from the root node to the current node'''
@@ -293,7 +351,9 @@ class tree(baseObject):
 
     #     # print("final prompt string", formatted_prompt)
     #     return formatted_prompt
-    def generatePromptFromRootToCurrentNode(self, currentNodeID, wholeBook):
+
+    def generatePromptFromRootToCurrentNodesChildren(self, currentNodeID, wholeBook):
+        '''This will generate a prompt string from the root node to the bottom of the current nodes last child.'''
         def extract_and_format(node_list, depth=0):
             nonlocal chapter_number, subchapter_numbers, formatted_prompt
 

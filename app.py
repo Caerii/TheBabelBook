@@ -211,6 +211,12 @@ def editor(ParentNodeID=0, NodeID=1):
         UpdateNodeID = request.form.get('node_to_update') #this is the nodeID of the node to update
         UpdateNodeLabel = request.form.get('node_label')
         UpdateNodeData = request.form.get('node_data')
+        # if any of these fields are empty, we just want to keep the old data
+        if UpdateNodeLabel == '' or UpdateNodeLabel is None:
+            UpdateNodeLabel = t.getTreeNodeLabelByNodeID(UpdateNodeID)
+        if UpdateNodeData == '' or UpdateNodeData is None:
+            UpdateNodeData = t.getTreeNodeDataByNodeID(UpdateNodeID)
+
         NodeID = request.args.get('nodeid') # grab the nodeid from the url
         t.update_treeNode(UpdateNodeID, UpdateNodeLabel, UpdateNodeData)
 
@@ -237,6 +243,10 @@ def editor(ParentNodeID=0, NodeID=1):
         t.cascadeDelete(DeleteNodeID)
         return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
 
+    if action is not None and action == 'startNewBook':
+        t.deleteAll()
+        return redirect(url_for('editor', parentid=0, nodeid=1))
+
     if action is not None and action == 'exportTreeNode':
         currentNodeID = t.data[0]['NodeID'] #grab the nodeid
         t.export_treeNode(1) # export the tree to a string
@@ -250,7 +260,7 @@ def editor(ParentNodeID=0, NodeID=1):
         
         t.export_treeNode(1) # export the tree to a string
         stringList = t.exportString # grab the string
-        promptSoFar = t.generatePromptFromRootToCurrentNode(NodeIDNew, stringList) # generate the prompt
+        promptSoFar = t.generatePromptFromRootToCurrentNodesChildren(NodeIDNew, stringList) # generate the prompt
         # split the prompt into a list by the new line character
         promptSoFarList = promptSoFar.split('\n')
         # take the last line of the prompt
@@ -264,6 +274,22 @@ def editor(ParentNodeID=0, NodeID=1):
         t.generateNodesBasedOnChapters(chapterList, NodeIDNew) # add to the current tree
 
         return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
+
+    if action is not None and action == 'generateNodeWords':
+        user_prompt = request.form.get('chapter_words') # grab the user input
+        openAIKey = mysecrets.OPENAI_API_KEY # Set the OpenAI API key
+        CurrentNodeID = request.args.get('nodeid') # grab the nodeid from the url
+
+        t.export_treeNode(1) # export the tree to a string
+        stringList = t.exportString # grab the string
+        promptSoFar = t.generatePromptFromRootToCurrentNodesChildren(CurrentNodeID, stringList) # generate the prompt
+
+        text_output = t.generateNodeWriting(user_prompt, openAIKey, promptSoFar, CurrentNodeID) # generate the writing in a node
+        print(text_output)
+        t.update_treeNode(CurrentNodeID, t.getTreeNodeLabelByNodeID(CurrentNodeID), t.getTreeNodeDataByNodeID(CurrentNodeID) + text_output) # update the node with the new text
+        return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
+
+
 
     if (request.args.get('nodeid')) is not None and request.args.get('nodeid') != '': # this will update the nodeid if we are on a child node
         if(int(request.args.get('nodeid')) >= 1):

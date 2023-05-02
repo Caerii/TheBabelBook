@@ -23,7 +23,14 @@
             <div class="mb-3">
                 <label for="node_to_update" class="form-label">Select a node to update:</label>
                 <select id="node_to_update" name="node_to_update" class="form-control">
+                    {% for node in tree.data %}
+                        {% if node['NodeID'] == nodeid %}
+                            <option value="{{ node['NodeID'] }}">ID: {{ node['NodeID'] }} Label: {{ node['NodeLabel'] }}</option>
+                        {% endif %}
+                    {% endfor %}
+                
                     {% for child in tree.children %}
+                        
                         <option value="{{ child[1] }}">ID: {{ child[1] }} Label: {{ child[2] }}</option>
                     {% endfor %}
                 </select>
@@ -63,17 +70,30 @@
             
             <button type="submit" class="btn btn-danger">Cascade Delete</button>
         </form>
+
+        <form method="POST" action="/editor?action=startNewBook&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="full-delete-form mt-4">
+            <button type="submit" class="btn btn-danger">Start New Book (Deletes Everything!)</button>
+        </form>
         
         <form method="POST" action="/editor?action=exportTreeNode" class="export-tree-node-form mt-4">
             <button type="submit" class="btn btn-primary">Export TreeNode</button>
         </form>
 
         <form method="POST" action="/editor?action=generateChapters&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="generate-book-form">
-            <label for="book_description" class="form-label">Describe a book you want!</label> <br>
-            (Appends to bottom of children of current node.)
+            <label for="book_description" class="form-label">Describe book chapters you want!</label> <br>
+            <b>(Appends to bottom of children of current node.)</b>
             <input type="text" id="book_description" name="prompt" class="form-control" placeholder="The ancient book of eggnog.">
             <button type="submit" class="btn btn-primary">AI Generate Book Chapters</button>
         </form>
+
+        <form method="POST" action="/editor?action=setPersonality&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="personality-form">
+            <label for="personality" class="form-label">Prefer a different writing style?</label> <br>
+            <b>(Changes your writers personality.)</b>
+            <input type="text" id="personality" name="writer_personality" class="form-control" placeholder="A future warrior from AD 2305 who writes omens of the Singularity.">
+            <button type="submit" class="btn btn-primary">Change Personality...!</button>
+        </form>
+
+        <b>The current writer personality is:</b> {{ tree.getPersonality() }} <br>
         
         {% if tree.data|default([])|length > 0 %}
             {% for node in tree.data %}
@@ -95,6 +115,13 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+        
+        <form method="POST" action="/editor?action=generateNodeWords&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="generate-book-form">
+            <label for="node_description" class="form-label">Describe what you want in this node's chapter!</label> <br>
+            <input type="text" id="node_description" name="chapter_words" class="form-control" placeholder="The ancient book of eggnog.">
+            <button type="submit" class="btn btn-primary">AI Generate Words</button>
+        </form>
+
     
         <br>
         <i class="small"> List of Children of Node # {{request.args.get('nodeid')}} ------------------------------------------------------------------------------------</i>
