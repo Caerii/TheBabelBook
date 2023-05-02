@@ -1,14 +1,17 @@
 # TheBabelBook
 The Library of Babel, now with GPT-3!
 
+
 # How it works
 The user is first asked to provide a book title, and a book description.
 GPT-3 will generate subheadings for the book, and you can click on any of the subheadings, to either expand more subheadings for that chapter, or to have GPT-3 start writing things for that chapter. You can also provide a description for the
 This allows you to explore infinitely nested ideas inside of the book, depending on what you find interesting.
 
+
 # Pictures Describing How it Works
 ![IMG_6617](https://user-images.githubusercontent.com/123018982/235555336-d039d533-e777-45f3-be25-6da5e3fab2fb.jpg)
-![image](https://user-images.githubusercontent.com/123018982/235555348-b798a029-623a-474d-b746-c2be1c7d8963.png)
+![IMG_6618](https://user-images.githubusercontent.com/123018982/235556993-380557c1-8bad-47cb-8bb6-c69aa071b396.jpg)
+
 
 # How Does The export_treeNode Recursor Work?
 This method exports a list of tree nodes as a string by taking three parameters, starterID, childList, and read_treenodeChildren. 
@@ -21,12 +24,15 @@ First, the method will check if the starterID parameter = 1, if it does, it will
 The purpose of this web application is to allow for the creation of a user-defined book of any kind.
 It utilizes GPT-3 to generate subheadings for a book, which can be infinitely nested. I think getting people to play around with the power of language models offers a lot for our creativity, and I think it would be fun to make it easy to play with. I personally read a lot of books, and the concept of a generative book is a fascinating concept that we are now capable of creating. I think co-creating is a better term though, and I think it will lead to new kinds of content creation.
 
+
 # Python Packages
 openai, flask, datetime, time 
+
 
 # Application Login Credentials
 username: o@o
 password: 12345
+
 
 # Relational Schema and Purpose of Each Table
 ![image](https://user-images.githubusercontent.com/123018982/235201241-34b18173-ddfa-4b5a-864c-7be7152991f5.png)
