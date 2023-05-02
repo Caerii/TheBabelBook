@@ -6,6 +6,17 @@ The user is first asked to provide a book title, and a book description.
 GPT-3 will generate subheadings for the book, and you can click on any of the subheadings, to either expand more subheadings for that chapter, or to have GPT-3 start writing things for that chapter. You can also provide a description for the
 This allows you to explore infinitely nested ideas inside of the book, depending on what you find interesting.
 
+# Pictures Describing How it Works
+![IMG_6617](https://user-images.githubusercontent.com/123018982/235555336-d039d533-e777-45f3-be25-6da5e3fab2fb.jpg)
+![image](https://user-images.githubusercontent.com/123018982/235555348-b798a029-623a-474d-b746-c2be1c7d8963.png)
+
+# How Does The export_treeNode Recursor Work?
+This method exports a list of tree nodes as a string by taking three parameters, starterID, childList, and read_treenodeChildren. 
+  starterID: this specifies the starting node ID, if an ID is not provided, it will be assumed that the root node is the starting node. 
+  childList: this specifies the list of children that are attached to the current node. If the current node is not provided, the child nodes of the current node will be read by using read_treenodeChildren. 
+First, the method will check if the starterID parameter = 1, if it does, it will read the label and data of the root node and create a string representation of it, which will then be appended to the exportString attribute of the class. Then, if the childList parameter is not None, the method will loop through each childNode in the list. The method will create a string representation of each childNode by striniing the node data and node label together with tab spaces, which will be appended to the exportString attribute of the class. 
+
+
 # Purpose & Motivation
 The purpose of this web application is to allow for the creation of a user-defined book of any kind.
 It utilizes GPT-3 to generate subheadings for a book, which can be infinitely nested. I think getting people to play around with the power of language models offers a lot for our creativity, and I think it would be fun to make it easy to play with. I personally read a lot of books, and the concept of a generative book is a fascinating concept that we are now capable of creating. I think co-creating is a better term though, and I think it will lead to new kinds of content creation.
