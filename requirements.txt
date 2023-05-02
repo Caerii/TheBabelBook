@@ -1,1 +1,5 @@
 mysql
+openai
+flask
+datetime
+time

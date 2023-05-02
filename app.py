@@ -135,33 +135,6 @@ def submitName():
     #At this point we would INSERT the user's name to the mysql table
     return render_template('message.html',msg='name '+str(username)+' added!')
 
-@app.route('/generateBook', methods=['GET','POST'])
-def generateBook():
-    user_prompt = request.form.get('prompt')
-    prompt = f"Please generate a list of chapter subheadings for the book with a book with the description as <{user_prompt}> in a numbered, bulleted list.\n 1. example_subtitle1 \n 2. example_subtitle2 \n New chapter based on description:"
-    # Call the OpenAI API with the prompt to generate a list of book subtitles
-    # Format the list as "Please generate a list of chapter subheadings for the book with the {user_prompt} in a numbered, bulleted list"
-    openai.api_key = mysecrets.OPENAI_API_KEY # Set the OpenAI API key
-    generated_list = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=160,
-        n=1,
-        stop=None,
-        temperature=0.9,
-    )
-    text_output = generated_list.choices[0].text
-    # Format the output so that it replaces periods with new line characters
-    # text_output = text_output.replace(" ", "\n")
-    # Create a list, each element of the list is composed of the integer, a period, space, and all of the words until the next number
-    for i in range (len(text_output)):
-        # text_output = str(i+1)
-        text_output = text_output.replace(str(i+1)+".", str(i+1) + " -")
-
-    # Return the generated list of subtitles
-    return render_template('generated_book.html', text_output=text_output)
-
-
 @app.route('/customqueries', methods=['GET','POST'])
 def customqueries():
     t = tree()
@@ -184,109 +157,133 @@ def customqueries():
 
     return render_template('customqueries.html')
 
-
-
-
 @app.route('/editor', methods=['GET','POST'])
 @app.route('/editor?<int:ParentNodeID>&<int:NodeID>')
 def editor(ParentNodeID=0, NodeID=1):
     t = tree()
     print("Start ParentNodeID",ParentNodeID)
     print("Start NodeID",NodeID)
+    
 
-    action = request.args.get('action')
-    
-    # NodeID = NodeID if request.args.get('NodeID') is None else request.args.get('NodeID')
-    # # make into int
-    # NodeID = int(NodeID)
-    # ParentNodeID = ParentNodeID if request.args.get('ParentNodeID') is None else request.args.get('ParentNodeID')
-    # # make into int
-    # ParentNodeID = int(ParentNodeID)
-    # ParentIDURL = ParentNodeID if request.args.get('nodeid') is None else request.args.get('nodeid')
-    
-    if ParentNodeID != 0:
-        NodeID = request.args.get('NodeID') # grab the nodeid from the url
-        ParentNodeID = request.args.get('ParentNodeID') # grab the parentid from the url
-        childList = t.read_treenodeChildren(NodeID) # read all the children of the current node we are on
-        
-        return render_template('editor.html', tree=t, parentid=ParentNodeID, nodeid=NodeID)
-    else:
-        childList = t.read_treenodeChildren(NodeID) # read all the children of the current node we are only on the root node
-        print("ParentNodeID is 0",childList)
-    
-    print("NodeID from before",NodeID)
-    print("ParentNodeID from before",ParentNodeID)
-    NodeID_new = request.args.get('NodeID')
+    # set ParentNodeID and nodeID based on URL arguments
+    NodeID_new = request.args.get('nodeid')
     if NodeID_new is not None and NodeID_new != '':
         NodeID = int(NodeID_new)
 
-    ParentNodeID_new = request.args.get('ParentNodeID')
+    ParentNodeID_new = request.args.get('parentid')
     if ParentNodeID_new is not None and ParentNodeID_new != '':
         if ParentNodeID_new == 'None':
             ParentNodeID_new = 0
-        print("Before int casting",ParentNodeID_new)
+        print("Before int casting", ParentNodeID_new)
         ParentNodeID = int(ParentNodeID_new)
-    print("NodeID from after",NodeID)
-    print("ParentNodeID from after",ParentNodeID)
 
-    if (request.args.get('NodeID')) is not None and request.args.get('NodeID') != '': # this will update the nodeid if we are on a child node
-        if(int(request.args.get('NodeID')) >= 1):
-            # ParentNodeID = (int)(request.args.get('ParentNodeID')) # grab the parentid from the url
-            NodeID = (int)(request.args.get('NodeID')) # grab the nodeid from the url
-            # print("ParentNodeID From Args line 235",ParentNodeID)
-            print("NodeID From Args line 236",NodeID)
-            # print("tree.data",t.data[0])
-            t.read_treenodeChildren(NodeID)
-            return render_template('editor.html', tree=t, parentid=ParentNodeID, nodeid=NodeID)
+    childList = t.read_treenodeChildren(NodeID) # read all the children of the current node we are only on the root node
+    print("line 183 childList",childList)
+
+    action = request.args.get('action')
+
+    # NodeID = (int)(request.args.get('nodeid')) # grab the nodeid from the url
+    # print("line 199 nodeid",NodeID)
 
     if action is not None and action == 'addTreeNode':
         print("ADDING NEW TREE NODE!!!!!!!!!")
         NodeLabel = request.form.get('node_label')
         NodeData = request.form.get('node_data')
         # grab the parent args and use it to create the child
-        # print("ParentIDURL",ParentIDURL)
         NodeLevel = '1' # default value before we add a counter to the tree
-        tchild = tree() # must create new child node
-        print("REQUEST ARGS",request.args)
+        # tchild = tree() # must create new child node
         NodeIDNew = request.args.get('nodeid') # grab the nodeid from the url
-        print("NodeID AFTER REQ",NodeIDNew)
         ParentNodeIDNew = request.args.get('parentid') # grab the parentid from the url
-        print("ParentNodeID AFTER REQ",ParentNodeIDNew)
+        # overwrite NodeID and ParentNodeID
+        NodeID = NodeIDNew
+        ParentNodeID = ParentNodeIDNew
 
-        tchild.create_treeNode(NodeIDNew, NodeLabel, NodeData, NodeLevel) # fill child with data from form
-        time.sleep(2)
-        print(tchild.data[0])
+        t.create_treeNode(NodeIDNew, NodeLabel, NodeData, NodeLevel) # fill child with data from form
+        # time.sleep(2)
         # grab the data of the tchild
-        nodeidchild = tchild.data[0]['NodeID']
-        nodeidparent = tchild.data[0]['ParentNodeID']
-        # NodeID = nodeidchild
-        # ParentNodeID = nodeidparent
-        print("add new child nodeidparent",nodeidparent)
-        print("add new child nodeidchild",nodeidchild)
-        # return render_template('editor.html', tree=t, nodeid=nodeidchild,parentid=ParentIDURL)
-        # return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
-        return render_template('editor.html', tree=t, parentid=ParentNodeIDNew, nodeid=NodeIDNew)
+        # nodeidchild = tchild.data[0]['NodeID']
+        # nodeidparent = tchild.data[0]['ParentNodeID']
+        # print("add new child nodeidparent",nodeidparent)
+        # print("add new child nodeidchild",nodeidchild)
+        return redirect(url_for('editor', parentid=ParentNodeIDNew, nodeid=NodeIDNew))
+
+    if action is not None and action == 'updateTreeNode':
+        UpdateNodeID = request.form.get('node_to_update') #this is the nodeID of the node to update
+        UpdateNodeLabel = request.form.get('node_label')
+        UpdateNodeData = request.form.get('node_data')
+        NodeID = request.args.get('nodeid') # grab the nodeid from the url
+        t.update_treeNode(UpdateNodeID, UpdateNodeLabel, UpdateNodeData)
+
+        return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
         
     if action is not None and action == 'deleteTreeNode':
         DeleteNodeID = request.form.get('node_to_delete') #this is the nodeID of the node to delete
-        t.delete_treeNode(DeleteNodeID)
-        time.sleep(2)
-        return render_template('editor.html', tree=t)
+        print("DeleteNodeID",DeleteNodeID)
+        # request arguments
+        NodeID = request.args.get('nodeid') # grab the nodeid from the url
+        ParentNodeID = request.args.get('parentid') # grab the parentid from the url
+        print("NodeID from url DELETE",NodeID)
+        print("ParentNodeID from url DELETE",ParentNodeID)
+        error = t.delete_treeNode(DeleteNodeID)
+        if error == -1:
+            print("Error deleting node")
+            return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
+        return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
+
+    if action is not None and action == 'cascadeDelete':
+        DeleteNodeID = request.form.get('node_to_cascade')
+        NodeID = request.args.get('nodeid') # grab the nodeid from the url
+        ParentNodeID = request.args.get('parentid') # grab the parentid from the url
+        t.cascadeDelete(DeleteNodeID)
+        return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
 
     if action is not None and action == 'exportTreeNode':
         currentNodeID = t.data[0]['NodeID'] #grab the nodeid
         t.export_treeNode(1) # export the tree to a string
         stringList = t.exportString # grab the string
-        # print out all the values in a for loop
-        # for i in range(len(stringList)):
-            # print(stringList[i])
         return render_template('export.html', tree=t, stringList=stringList)
 
+    if action is not None and action == 'generateChapters':
+        user_prompt = request.form.get('prompt')
+        openAIKey = mysecrets.OPENAI_API_KEY # Set the OpenAI API key
+        NodeIDNew = request.args.get('nodeid') # grab the nodeid from the url
+        
+        t.export_treeNode(1) # export the tree to a string
+        stringList = t.exportString # grab the string
+        promptSoFar = t.generatePromptFromRootToCurrentNode(NodeIDNew, stringList) # generate the prompt
+        # split the prompt into a list by the new line character
+        promptSoFarList = promptSoFar.split('\n')
+        # take the last line of the prompt
+        lastLine = promptSoFarList[-1]
+        # split by space
+        lastLineList = lastLine.split(' ')
+        lastNumber = lastLineList[0]
+
+        # pass the promptSoFar generateChapters
+        chapterList = t.generateChapters(user_prompt, openAIKey, promptSoFar, howManyChapters=5) # generate the chapters
+        t.generateNodesBasedOnChapters(chapterList, NodeIDNew) # add to the current tree
+
+        return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
+
+    if (request.args.get('nodeid')) is not None and request.args.get('nodeid') != '': # this will update the nodeid if we are on a child node
+        if(int(request.args.get('nodeid')) >= 1):
+            # ParentNodeID = (int)(request.args.get('parentid')) # grab the parentid from the url
+            NodeID = (int)(request.args.get('nodeid')) # grab the nodeid from the url
+            
+            print("ParentNodeID From Args line 235",ParentNodeID)
+            print("NodeID From Args line 236",NodeID)
+            # print("tree.data",t.data[0])
+            t.read_treenodeChildren(NodeID)
+            return render_template('editor.html', tree=t, parentid=ParentNodeID, nodeid=NodeID)
+
+    # grab the nodeid from the url
+    NodeID = request.args.get('nodeid')
+    ParentNodeID = request.args.get('parentid')
     print("NodeID FINAL REFRESH",NodeID)
     print("ParentNodeID FINAL REFRESH",ParentNodeID)
     return render_template('editor.html', tree=t, parentid=ParentNodeID, nodeid=NodeID)
 
-
+# user login/logout routes
 @app.route('/login',methods = ['GET','POST'])
 def login():
     '''
@@ -321,6 +318,8 @@ def logout():
         del session['user']
         del session['active']
     return render_template('login.html', title='Login', msg='You have logged out.')
+
+
 # endpoint route for static files
 @app.route('/static/<path:path>')
 def send_static(path):

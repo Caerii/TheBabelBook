@@ -13,6 +13,13 @@ class baseObject:
         self.data = [] #data is a list of dictionaries representing rows in our table
         self.establishConnection()
         self.getFields()
+    def exists(self):
+        """Check if the data of this object exists in the database"""
+        if self.data is not None and len(self.data) > 0:
+            return True
+        else:
+            return False
+
     def establishConnection(self):
 
         self.conn = pymysql.connect(host=mysecrets.db_host, port=3306, user=mysecrets.db_user,

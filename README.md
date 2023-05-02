@@ -29,6 +29,10 @@ It utilizes GPT-3 to generate subheadings for a book, which can be infinitely ne
 # Python Packages
 openai, flask, datetime, time 
 
+<<<<<<< Updated upstream
+=======
+install them with `pip install -r requirements.txt`
+>>>>>>> Stashed changes
 
 # Application Login Credentials
 username: o@o
@@ -50,7 +54,7 @@ Query 2: layersDeep
 Query 3: totalChildCount
 
 # SQL Schema File 
-Can be found in data.sql file 
+Can be found in /old/data.sql file 
 
 
 

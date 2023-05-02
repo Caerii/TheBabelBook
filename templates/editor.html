@@ -7,67 +7,101 @@
             </form>
         </div>
 
-        <form method="POST" action="/generateBook" class="generate-book-form">
-            <label for="book_description" class="form-label">Describe a book you want!</label>
-            <input type="text" id="book_description" name="prompt" class="form-control" placeholder="The ancient book of eggnog.">
-            <button type="submit" class="btn btn-primary">Generate Book</button>
-        </form>
-        
         <form method="POST" action="/editor?action=addTreeNode&nodeid={{ nodeid }}&parentid={{ parentid }}" class="add-tree-node-form mt-4">
             <div class="mb-3">
                 <label for="node_label" class="form-label">Node Label:</label>
-                <input type="text" id="node_label" name="node_label" class="form-control" placeholder="Enter node label">
+                <input type="text" id="node_label" name="node_label" class="form-control" placeholder="Enter node label.">
             </div>
             <div class="mb-3">
                 <label for="node_data" class="form-label">Node Data:</label>
-                <input type="text" id="node_data" name="node_data" class="form-control" placeholder="Enter node data">
+                <input type="text" id="node_data" name="node_data" class="form-control" placeholder="Enter node data.">
             </div>
             <button type="submit" class="btn btn-primary">Add TreeNode</button>
         </form>
-        
-        
-        
-        <form method="POST" action="/editor?action=deleteTreeNode" class="delete-tree-node-form mt-4">
+
+        <form method="POST" action="/editor?action=updateTreeNode&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="update-tree-node-form mt-4">
+            <div class="mb-3">
+                <label for="node_to_update" class="form-label">Select a node to update:</label>
+                <select id="node_to_update" name="node_to_update" class="form-control">
+                    {% for child in tree.children %}
+                        <option value="{{ child[1] }}">ID: {{ child[1] }} Label: {{ child[2] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="node_label" class="form-label">Node Label:</label>
+                <input type="text" id="node_label" name="node_label" class="form-control" placeholder="Enter new node label.">
+            </div>
+            <div class="mb-3">
+                <label for="node_data" class="form-label">Node Data:</label>
+                <input type="text" id="node_data" name="node_data" class="form-control" placeholder="Enter new node data.">
+            </div>
+            <button type="submit" class="btn btn-primary">Update TreeNode</button>
+        </form>
+          
+        <form method="POST" action="/editor?action=deleteTreeNode&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="delete-tree-node-form mt-4">
             <div class="mb-3">
                 <label for="node_to_delete" class="form-label">Select a node to delete:</label>
                 <select id="node_to_delete" name="node_to_delete" class="form-control">
                     {% for child in tree.children %}
-                        <option value="{{ child[1] }}">{{ child[1] }}</option>
+                        <option value="{{ child[1] }}">ID: {{ child[1] }} Label: {{ child[2] }}</option>
                     {% endfor %}
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Delete TreeNode</button>
         </form>
+
+        <form method="POST" action="/editor?action=cascadeDelete&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="cascade-delete-form mt-4">
+            <div class="mb-3">
+                <label for="node_to_cascade" class="form-label">Cascade delete node (for nested children):</label>
+                <select id="node_to_cascade" name="node_to_cascade" class="form-control">
+                    {% for child in tree.children %}
+                        <option value="{{ child[1] }}">ID: {{ child[1] }} Label: {{ child[2] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-danger">Cascade Delete</button>
+        </form>
         
         <form method="POST" action="/editor?action=exportTreeNode" class="export-tree-node-form mt-4">
             <button type="submit" class="btn btn-primary">Export TreeNode</button>
         </form>
+
+        <form method="POST" action="/editor?action=generateChapters&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="generate-book-form">
+            <label for="book_description" class="form-label">Describe a book you want!</label> <br>
+            (Appends to bottom of children of current node.)
+            <input type="text" id="book_description" name="prompt" class="form-control" placeholder="The ancient book of eggnog.">
+            <button type="submit" class="btn btn-primary">AI Generate Book Chapters</button>
+        </form>
         
         {% if tree.data|default([])|length > 0 %}
-            {% if NodeID is none %}
-                <div>
-                    <b>{{ tree.data[0]['NodeLabel'] }}</b> <br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;{{ tree.data[0]['NodeData'] }} 
-                </div>
-            {% else %}
-                {% for node in tree.data %}
-                    {% if node['NodeID'] == NodeID %}
-                        <i class="small">Current Node -----------------------------------------------------------------------------------------------</i> 
-                        <div> <a href="/editor?ParentNodeID={{ tree.data[0]['ParentNodeID'] }}&NodeID={{ tree.data[0]['NodeID'] }}">{{ node['NodeID'] }}</a>
-                            <b>{{ node['NodeLabel'] }}</b> <br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;{{ node['NodeData'] }} 
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+            {% for node in tree.data %}
+                {% if node['NodeID'] == 1 %}
+                    <i class="small">Current Node -----------------------------------------------------------------------------------------------</i> 
+                    <div> <a href="/editor?parentid={{ 0 }}&nodeid={{ 1 }}">{{ node['NodeID'] }}</a>
+                        <b>{{ node['NodeLabel'] }}</b> <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{ node['NodeData'] }} 
+                    </div>
+                
+                {% elif node['NodeID'] == nodeid %}
+                    <i class="small">Current Node -----------------------------------------------------------------------------------------------</i>
+                    <br>
+                    <br> 
+                    <div> <a href="/editor?parentid={{ tree.getTreeParentIDByNodeID(parentid) }}&nodeid={{ parentid }}">{{ node['NodeID'] }}</a>
+                        <b>{{ node['NodeLabel'] }}</b> <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{ node['NodeData'] }} 
+                    </div>  
+                {% endif %}
+            {% endfor %}
         {% endif %}
     
         <br>
-        <i class="small"> List of Children of Node # {{request.args.get('NodeID')}} -----------------------------------------------------------------------------------------------</i>
+        <i class="small"> List of Children of Node # {{request.args.get('nodeid')}} ------------------------------------------------------------------------------------</i>
         <br>
         <br>
         {% for child in tree.children  %}
-            <div> <a href="/editor?ParentNodeID={{ child[0] }}&NodeID={{ child[1] }}">{{ child[1] }}</a> 
+            <div> <a href="/editor?parentid={{ child[0] }}&nodeid={{ child[1] }}">{{ child[1] }}</a> 
                 <b>{{ child[2] }}</b> <br>
                 &nbsp;&nbsp;&nbsp;&nbsp;{{ child[3] }} 
             </div>
