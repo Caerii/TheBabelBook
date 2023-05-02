@@ -10,7 +10,8 @@ This allows you to explore infinitely nested ideas inside of the book, depending
 
 # Pictures Describing How it Works
 ![IMG_6617](https://user-images.githubusercontent.com/123018982/235555336-d039d533-e777-45f3-be25-6da5e3fab2fb.jpg)
-![IMG_6618](https://user-images.githubusercontent.com/123018982/235556993-380557c1-8bad-47cb-8bb6-c69aa071b396.jpg)
+![IMG_6618](https://user-images.githubusercontent.com/123018982/235557075-56229e36-0eb2-4c9e-b4f2-fa5e6b24e1ff.jpg)
+
 
 
 # How Does The export_treeNode Recursor Work?
