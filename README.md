@@ -29,7 +29,8 @@ This method exports a list of tree nodes as a string by taking three parameters,
   starterID: this specifies the starting node ID, if an ID is not provided, it will be assumed that the root node is the starting node. 
   childList: this specifies the list of children that are attached to the current node. If the current node is not provided, the child nodes of the current node will be read by using read_treenodeChildren. 
 First, the method will check if the starterID parameter = 1, if it does, it will read the label and data of the root node and create a string representation of it, which will then be appended to the exportString attribute of the class. Then, if the childList parameter is not None, the method will loop through each childNode in the list. The method will create a string representation of each childNode by striniing the node data and node label together with tab spaces, which will be appended to the exportString attribute of the class. 
-![IMG_6632](https://user-images.githubusercontent.com/123018982/236074218-7eb6b877-c664-4bf5-90b3-7bf8022fc7b9.jpeg)
+![IMG_6632](https://user-images.githubusercontent.com/123018982/236074394-1ce87c76-9a7f-4e42-bbb1-2c8ffb57e981.png)
+
 
 
 
