@@ -248,10 +248,22 @@ def editor(ParentNodeID=0, NodeID=1):
         return redirect(url_for('editor', parentid=0, nodeid=1))
 
     if action is not None and action == 'exportTreeNode':
-        currentNodeID = t.data[0]['NodeID'] #grab the nodeid
+        # get nodeid of the last bottom right node in the tree
+        bottomRightNodeID = t.depth_first_search_bottom_right(1)
+        exportMethod = request.form.get('export_method')# grab the export method
         t.export_treeNode(1) # export the tree to a string
         stringList = t.exportString # grab the string
-        return render_template('export.html', tree=t, stringList=stringList)
+        print("exportMethod",exportMethod)
+        if exportMethod == 'tabs':
+            return render_template('export.html', tree=t, stringList=stringList)
+        if exportMethod == 'numbered':
+            promptSoFar = t.generatePromptFromRootToCurrentNodesChildren(bottomRightNodeID, stringList)
+            stringList = promptSoFar
+            # break the string into a list by the new line character
+            stringList = stringList.split('\n')
+            # discard the first two lines
+            stringList = stringList[2:]
+            return render_template('export.html', tree=t, stringList=stringList)
 
     if action is not None and action == 'generateChapters':
         user_prompt = request.form.get('prompt')
@@ -285,7 +297,7 @@ def editor(ParentNodeID=0, NodeID=1):
         promptSoFar = t.generatePromptFromRootToCurrentNodesChildren(CurrentNodeID, stringList) # generate the prompt
 
         text_output = t.generateNodeWriting(user_prompt, openAIKey, promptSoFar, CurrentNodeID) # generate the writing in a node
-        print(text_output)
+        # print(text_output)
         t.update_treeNode(CurrentNodeID, t.getTreeNodeLabelByNodeID(CurrentNodeID), t.getTreeNodeDataByNodeID(CurrentNodeID) + text_output) # update the node with the new text
         return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
 

@@ -11,6 +11,7 @@ class tree(baseObject):
         self.children = []
         self.exportString = []
         self.writerPersonality = 'A wonderful AI writer named Quark who is imaginative, creative, and loves to write stories.'
+        self.prompt = None
     def getPersonality(self):
         return self.writerPersonality
 
@@ -88,6 +89,32 @@ class tree(baseObject):
         t.getAll()
         l = t.toList() 
         return l # return the list
+    
+    # Find the bottom rightmost node using depth first search
+    def depth_first_search_bottom_right(self, node_id):
+        '''Find the bottom rightmost node using depth first search. Provide root node.'''
+        # Start at the root node
+        current_node_id = node_id
+        # Keep track of the bottom rightmost node seen so far
+        bottom_rightmost_node_id = current_node_id
+        # Continue until we reach a leaf node (i.e. a node with no children)
+        while True:
+            # Get the list of children for the current node
+            children = self.read_treenodeChildren(current_node_id)
+            if not children:
+                # This node has no children, so we've reached a leaf node
+                return bottom_rightmost_node_id
+            # Process the children of the current node in reverse order
+            for child in reversed(children):
+                # Get the ID of the child node
+                child_node_id = int(child[1])
+                # Update the bottom rightmost node ID if necessary
+                if child_node_id > int(bottom_rightmost_node_id):
+                    bottom_rightmost_node_id = child_node_id
+                # Set the current node to be the child node
+                current_node_id = child_node_id
+                # Break out of the loop to process this child node
+                break
 
     def update_treeNode(self, NodeID, NodeLabel, NodeData):
         '''This will change the specific treenode label and data based on the NodeID given'''
@@ -251,6 +278,7 @@ class tree(baseObject):
             chapterList[i] = " ".join(chapterList[i])
 
         print("prompt: ", prompt)
+        self.prompt = prompt
 
         return chapterList # returns a string of the generated list of chapter subheadings
 
@@ -293,64 +321,64 @@ class tree(baseObject):
         return text_output
 
 
-    # def generatePromptFromRootToCurrentNode(self, currentNodeID, wholeBook):
-    #     '''This will generate a prompt string from the root node to the current node'''
-    #     def extract_and_format(node_list, depth=0): # depth is the number of tabs
-    #         nonlocal chapter_number, subchapter_numbers, formatted_prompt 
-    #         # nonlocal variables work by allowing you to assign to variables in an outer (but not global) scope. 
+    def generatePromptFromRootToCurrentNode(self, currentNodeID, wholeBook):
+        '''This will generate a prompt string from the root node to the current node'''
+        def extract_and_format(node_list, depth=0): # depth is the number of tabs
+            nonlocal chapter_number, subchapter_numbers, formatted_prompt 
+            # nonlocal variables work by allowing you to assign to variables in an outer (but not global) scope. 
 
-    #         while node_list: # while the node list is not empty, you can explore it
-    #             node = node_list.pop(0).strip() # pop the first element of the list
-    #             if not node or node[0] == "#": # if the node is empty or starts with a #, then continue
-    #                 continue
+            while node_list: # while the node list is not empty, you can explore it
+                node = node_list.pop(0).strip() # pop the first element of the list
+                if not node or node[0] == "#": # if the node is empty or starts with a #, then continue
+                    continue
 
-    #             if depth == 0: # if the depth is 0, then it is a chapter
-    #                 chapter_number += 1 # increment the chapter number
-    #                 subchapter_numbers = [0] # reset the subchapter numbers
-    #                 formatted_prompt += "{}. {}\n".format(chapter_number, node) # add the chapter number and the node to the prompt
-    #             else: # if the depth is not 0, then it is a subchapter
-    #                 while len(subchapter_numbers) < depth: # while the length of the subchapter numbers is less than the depth, then add a 0
-    #                     subchapter_numbers.append(0) # add a 0
-    #                 subchapter_numbers[-1] += 1 # increment the last element of the subchapter numbers
-    #                 subchapter_number_string = ".".join(str(x) for x in subchapter_numbers) # create a string of the subchapter numbers
+                if depth == 0: # if the depth is 0, then it is a chapter
+                    chapter_number += 1 # increment the chapter number
+                    subchapter_numbers = [0] # reset the subchapter numbers
+                    formatted_prompt += "{}. {}\n".format(chapter_number, node) # add the chapter number and the node to the prompt
+                else: # if the depth is not 0, then it is a subchapter
+                    while len(subchapter_numbers) < depth: # while the length of the subchapter numbers is less than the depth, then add a 0
+                        subchapter_numbers.append(0) # add a 0
+                    subchapter_numbers[-1] += 1 # increment the last element of the subchapter numbers
+                    subchapter_number_string = ".".join(str(x) for x in subchapter_numbers) # create a string of the subchapter numbers
 
-    #                 if node.endswith("~"): # if the node ends with a ~, then it is a node
-    #                     formatted_prompt += "{}.{} {}\n".format(str(chapter_number), subchapter_number_string, node[:-1]) # add the chapter number, subchapter number, and node to the prompt
-    #                     subchapter_numbers.append(0) # add a 0 to the subchapter numbers
-    #                 else: # if the node does not end with a ~, then it is a subnode
-    #                     formatted_prompt += "{}.{} {}\n".format(str(chapter_number), subchapter_number_string, node) # add the chapter number, subchapter number, and node to the prompt
+                    if node.endswith("~"): # if the node ends with a ~, then it is a node
+                        formatted_prompt += "{}.{} {}\n".format(str(chapter_number), subchapter_number_string, node[:-1]) # add the chapter number, subchapter number, and node to the prompt
+                        subchapter_numbers.append(0) # add a 0 to the subchapter numbers
+                    else: # if the node does not end with a ~, then it is a subnode
+                        formatted_prompt += "{}.{} {}\n".format(str(chapter_number), subchapter_number_string, node) # add the chapter number, subchapter number, and node to the prompt
 
-    #             if node_list and node_list[0].startswith("\t"): # if the node list is not empty and the first element of the node list starts with a tab, then it is a subnode
-    #                 sub_nodes = [] # create a list of subnodes
-    #                 while node_list and node_list[0].startswith("\t"): # while the node list is not empty and the first element of the node list starts with a tab, then it is a subnode
-    #                     sub_nodes.append(node_list.pop(0)[1:]) # add the subnode to the list of subnodes
-    #                 extract_and_format(sub_nodes, depth + 1) # recursively call the function to add the subnodes to the prompt
-    #                 subchapter_numbers.pop() # remove the last element of the subchapter numbers
+                if node_list and node_list[0].startswith("\t"): # if the node list is not empty and the first element of the node list starts with a tab, then it is a subnode
+                    sub_nodes = [] # create a list of subnodes
+                    while node_list and node_list[0].startswith("\t"): # while the node list is not empty and the first element of the node list starts with a tab, then it is a subnode
+                        sub_nodes.append(node_list.pop(0)[1:]) # add the subnode to the list of subnodes
+                    extract_and_format(sub_nodes, depth + 1) # recursively call the function to add the subnodes to the prompt
+                    subchapter_numbers.pop() # remove the last element of the subchapter numbers
 
-    #             # Reset subchapter_numbers for nodes with the same depth
-    #             if depth > 0: # if the depth is greater than 0, then it is a subchapter
-    #                 subchapter_numbers = subchapter_numbers[:depth] # reset the subchapter numbers
+                # Reset subchapter_numbers for nodes with the same depth
+                if depth > 0: # if the depth is greater than 0, then it is a subchapter
+                    subchapter_numbers = subchapter_numbers[:depth] # reset the subchapter numbers
 
-    #     currentNodeLabel = self.getTreeNodeLabelByNodeID(currentNodeID) # get the current node label
-    #     currentNodeIndex = -1 # initialize the current node index
-    #     for i in range(len(wholeBook)): # for each element in the whole book
-    #         if currentNodeLabel in wholeBook[i]: # if the current node label is in the element of the whole book
-    #             currentNodeIndex = i # set the current node index to the index of the element of the whole book
-    #             break
+        currentNodeLabel = self.getTreeNodeLabelByNodeID(currentNodeID) # get the current node label
+        currentNodeIndex = -1 # initialize the current node index
+        for i in range(len(wholeBook)): # for each element in the whole book
+            if currentNodeLabel in wholeBook[i]: # if the current node label is in the element of the whole book
+                currentNodeIndex = i # set the current node index to the index of the element of the whole book
+                break
 
-    #     wholeBook = wholeBook[:currentNodeIndex + 1] # set the whole book to be the whole book up to the current node index
+        wholeBook = wholeBook[:currentNodeIndex + 1] # set the whole book to be the whole book up to the current node index
 
-    #     chapter_number = 0 # initialize the chapter number
-    #     subchapter_numbers = [] # initialize the subchapter numbers
-    #     formatted_prompt = (
-    #         "You are generating an original work. The following is a book with a list of chapter headings and their content.\n"
-    #         "The ~ symbol separates the chapter heading from the content\n"
-    #     )
+        chapter_number = 0 # initialize the chapter number
+        subchapter_numbers = [] # initialize the subchapter numbers
+        formatted_prompt = (
+            "You are generating an original work. The following is a book with a list of chapter headings and their content.\n"
+            "The ~ symbol separates the chapter heading from the content\n"
+        )
 
-    #     extract_and_format(wholeBook) # call the extract_and_format function to generate the prompt
+        extract_and_format(wholeBook) # call the extract_and_format function to generate the prompt
 
-    #     # print("final prompt string", formatted_prompt)
-    #     return formatted_prompt
+        # print("final prompt string", formatted_prompt)
+        return formatted_prompt
 
     def generatePromptFromRootToCurrentNodesChildren(self, currentNodeID, wholeBook):
         '''This will generate a prompt string from the root node to the bottom of the current nodes last child.'''
@@ -410,7 +438,8 @@ class tree(baseObject):
         )
 
         extract_and_format(wholeBook)
-        print("final prompt string", formatted_prompt)
+        # print("final prompt string", formatted_prompt)
+        self.prompt = formatted_prompt
 
         return formatted_prompt
 

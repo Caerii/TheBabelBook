@@ -76,14 +76,14 @@
         </form>
         
         <form method="POST" action="/editor?action=exportTreeNode" class="export-tree-node-form mt-4">
+            <div class="mb-3">
+                <label for="export_method" class="form-label">Export Method:</label>
+                <select id="export_method" name="export_method" class="form-control">
+                    <option value="tabs">Tabs + Newlines</option>
+                    <option value="numbered">Numbered</option>  
+                </select>
+            </div>
             <button type="submit" class="btn btn-primary">Export TreeNode</button>
-        </form>
-
-        <form method="POST" action="/editor?action=generateChapters&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="generate-book-form">
-            <label for="book_description" class="form-label">Describe book chapters you want!</label> <br>
-            <b>(Appends to bottom of children of current node.)</b>
-            <input type="text" id="book_description" name="prompt" class="form-control" placeholder="The ancient book of eggnog.">
-            <button type="submit" class="btn btn-primary">AI Generate Book Chapters</button>
         </form>
 
         <form method="POST" action="/editor?action=setPersonality&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="personality-form">
@@ -91,6 +91,13 @@
             <b>(Changes your writers personality.)</b>
             <input type="text" id="personality" name="writer_personality" class="form-control" placeholder="A future warrior from AD 2305 who writes omens of the Singularity.">
             <button type="submit" class="btn btn-primary">Change Personality...!</button>
+        </form>
+
+        <form method="POST" action="/editor?action=generateChapters&nodeid={{ nodeid }}&parentid={{ tree.getTreeParentIDByNodeID(nodeid) }}" class="generate-book-form">
+            <label for="book_description" class="form-label">Describe book chapters you want!</label> <br>
+            <b>(Appends to bottom of children of current node.)</b>
+            <input type="text" id="book_description" name="prompt" class="form-control" placeholder="The ancient book of eggnog.">
+            <button type="submit" class="btn btn-primary">AI Generate Book Chapters</button>
         </form>
 
         <b>The current writer personality is:</b> {{ tree.getPersonality() }} <br>
