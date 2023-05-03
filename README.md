@@ -8,9 +8,19 @@ GPT-3 will generate subheadings for the book, and you can click on any of the su
 This allows you to explore infinitely nested ideas inside of the book, depending on what you find interesting.
 
 
-# Pictures Describing How it Works
+# Drawings Describing How The Interface Works
 ![IMG_6617](https://user-images.githubusercontent.com/123018982/235555336-d039d533-e777-45f3-be25-6da5e3fab2fb.jpg)
 ![IMG_6618](https://user-images.githubusercontent.com/123018982/235557075-56229e36-0eb2-4c9e-b4f2-fa5e6b24e1ff.jpg)
+
+# Pictures Describing How The Interface Works
+
+
+
+
+
+# Pictures Describing How The Queries Work
+
+ 
 
 
 
