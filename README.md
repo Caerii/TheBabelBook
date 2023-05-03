@@ -18,7 +18,7 @@ This allows you to explore infinitely nested ideas inside of the book, depending
 
 
 
-# Pictures Describing How The Queries Work
+# Drawings Describing How The Queries Work
 
  
 
@@ -29,7 +29,8 @@ This method exports a list of tree nodes as a string by taking three parameters,
   starterID: this specifies the starting node ID, if an ID is not provided, it will be assumed that the root node is the starting node. 
   childList: this specifies the list of children that are attached to the current node. If the current node is not provided, the child nodes of the current node will be read by using read_treenodeChildren. 
 First, the method will check if the starterID parameter = 1, if it does, it will read the label and data of the root node and create a string representation of it, which will then be appended to the exportString attribute of the class. Then, if the childList parameter is not None, the method will loop through each childNode in the list. The method will create a string representation of each childNode by striniing the node data and node label together with tab spaces, which will be appended to the exportString attribute of the class. 
-![IMG_6632](https://user-images.githubusercontent.com/123018982/236074484-d40804cf-6799-4fc4-9ba9-1a4f37df7c65.jpg)
+![IMG_6632](https://user-images.githubusercontent.com/123018982/236074710-96fd3ea9-4ce1-4d0c-9c6d-eec052da2fde.jpg)
+
 
 
 
