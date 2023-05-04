@@ -36,9 +36,15 @@ Go back to the main menu and click on the "Custom Queries" button to view how ma
 
 
 # Drawings Describing How The Queries Work
+ howManyNodes() Query:
+ ![IMG_6633](https://user-images.githubusercontent.com/123018982/236083428-e4ea39be-7fb1-4a2c-a174-323cd2195aef.jpg)
+
+ howmanyChildren() Query:
+ ![IMG_6634](https://user-images.githubusercontent.com/123018982/236085316-5b9e1afc-b6f0-47e3-941b-15fe3c3efb79.jpg)
 
  
-
+ howManyLayers() Query:
+ 
 
 
 # How Does The export_treeNode Recursor Work?
