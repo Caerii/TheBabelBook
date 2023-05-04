@@ -13,6 +13,18 @@ This allows you to explore infinitely nested ideas inside of the book, depending
 ![IMG_6618](https://user-images.githubusercontent.com/123018982/235557075-56229e36-0eb2-4c9e-b4f2-fa5e6b24e1ff.jpg)
 
 # Pictures Describing How The Interface Works
+When the user interface is first opened, it will show this page. Click on the "editor" button to begin using the BabelBook! 
+<img width="1204" alt="image" src="https://user-images.githubusercontent.com/123018982/236076791-12e5b247-39ea-4f1c-8ae7-40468e18f316.png">
+
+Enter a Node Label of your choosing such as, "The Cat" and click on the "Add TreeNode" button. You can also add Node Data of your choosing such as, "dogs fighting". You can choose to add one or the other, or both! This will create a new treenode. 
+<img width="1204" alt="image" src="https://user-images.githubusercontent.com/123018982/236078521-21be67e7-0ca0-4401-943a-3e4049379d27.png">
+
+If you scroll to the bottom of the page, you can see the Node Label and Node Data that you inputted, as shown here. Click on the number to edit this node, and add information to it. 
+<img width="1204" alt="image" src="https://user-images.githubusercontent.com/123018982/236078899-e00f1a8a-c304-4b74-a843-d7628cde90ca.png">
+
+
+
+
 
 
 
