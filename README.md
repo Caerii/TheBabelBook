@@ -22,12 +22,17 @@ Enter a Node Label of your choosing such as, "The Cat" and click on the "Add Tre
 If you scroll to the bottom of the page, you can see the Node Label and Node Data that you inputted, as shown here. Click on the number to edit this node, and add information to it. 
 <img width="1204" alt="image" src="https://user-images.githubusercontent.com/123018982/236078899-e00f1a8a-c304-4b74-a843-d7628cde90ca.png">
 
+Now that you have clicked on that number, scroll to the bottom of this page to input information about what you want the book to be about. You can also input information about what you want the chapters to be about. Change the personality of the writer by typing something of your choosing. 
+<img width="1204" alt="image" src="https://user-images.githubusercontent.com/123018982/236079635-ba55699b-d423-4399-a9bc-c1324f369ca8.png">
 
+If you input something under "Describe Book Chapters You Want!", you will now have chapters that you can click on and create new stories for those chapters by clicking on the numbers next to the chapters! 
+<img width="1204" alt="image" src="https://user-images.githubusercontent.com/123018982/236080322-eee37f29-1eb8-42db-9412-dbbc4fedbdfc.png">
 
+To change information regarding a current node, click on the drop down menu under "Select a node to update:". You can then enter new information regarding the node label and node data for that node. If you want to delete or cascade delete a node, use the drop down menu to choose which ones to delete. If you want to delete the whole book use the "Start New Book" button. To export the stories, click on the "Export TreeNode" button, and choose whether you want it to be numbered or in tabs + newline form. 
+<img width="1204" alt="image" src="https://user-images.githubusercontent.com/123018982/236081539-5e9e84df-e5f2-4aa5-8f95-5d253a3e63bb.png">
 
-
-
-
+Go back to the main menu and click on the "Custom Queries" button to view how many nodes are in the tree, how many layers are in the tree, or how many children are in the tree. 
+<img width="1204" alt="image" src="https://user-images.githubusercontent.com/123018982/236081974-7031ac99-d456-47fa-8193-1da4f5f86d78.png">
 
 
 # Drawings Describing How The Queries Work
