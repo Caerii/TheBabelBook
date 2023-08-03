@@ -6,12 +6,10 @@ from datetime import timedelta
 from user import user
 import mysecrets
 import time
-import openai
 from treeNode import tree
 
 #create Flask app instance
 app = Flask(__name__,static_url_path='')
-
 
 #Configure serverside sessions 
 app.config['SECRET_KEY'] = '56hdtryhRTg'
@@ -157,13 +155,14 @@ def customqueries():
 
     return render_template('customqueries.html')
 
+t = tree()
+
 @app.route('/editor', methods=['GET','POST'])
 @app.route('/editor?<int:ParentNodeID>&<int:NodeID>')
-def editor(ParentNodeID=0, NodeID=1):
-    t = tree()
+def editor(ParentNodeID=0, NodeID=1, tree=t):
+    
     print("Start ParentNodeID",ParentNodeID)
     print("Start NodeID",NodeID)
-    
 
     # set ParentNodeID and nodeID based on URL arguments
     NodeID_new = request.args.get('nodeid')
@@ -265,10 +264,19 @@ def editor(ParentNodeID=0, NodeID=1):
             stringList = stringList[2:]
             return render_template('export.html', tree=t, stringList=stringList)
 
+    if action is not None and action == 'setPersonality':
+        personality = request.form.get('writer_personality')
+        t.writerPersonality = personality
+        print("personality",personality)
+        print("writerPersonality",t.writerPersonality)
+        # return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
+        return render_template('editor.html', tree=t, parentid=ParentNodeID, nodeid=NodeID)
+
     if action is not None and action == 'generateChapters':
         user_prompt = request.form.get('prompt')
         openAIKey = mysecrets.OPENAI_API_KEY # Set the OpenAI API key
         NodeIDNew = request.args.get('nodeid') # grab the nodeid from the url
+        howManyChapters = request.form.get('chapter_count')
         
         t.export_treeNode(1) # export the tree to a string
         stringList = t.exportString # grab the string
@@ -279,10 +287,9 @@ def editor(ParentNodeID=0, NodeID=1):
         lastLine = promptSoFarList[-1]
         # split by space
         lastLineList = lastLine.split(' ')
-        lastNumber = lastLineList[0]
 
         # pass the promptSoFar generateChapters
-        chapterList = t.generateChapters(user_prompt, openAIKey, promptSoFar, howManyChapters=5) # generate the chapters
+        chapterList = t.generateChapters(user_prompt, openAIKey, promptSoFar, howManyChapters) # generate the chapters
         t.generateNodesBasedOnChapters(chapterList, NodeIDNew) # add to the current tree
 
         return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
@@ -300,8 +307,6 @@ def editor(ParentNodeID=0, NodeID=1):
         # print(text_output)
         t.update_treeNode(CurrentNodeID, t.getTreeNodeLabelByNodeID(CurrentNodeID), t.getTreeNodeDataByNodeID(CurrentNodeID) + text_output) # update the node with the new text
         return redirect(url_for('editor', parentid=ParentNodeID, nodeid=NodeID))
-
-
 
     if (request.args.get('nodeid')) is not None and request.args.get('nodeid') != '': # this will update the nodeid if we are on a child node
         if(int(request.args.get('nodeid')) >= 1):

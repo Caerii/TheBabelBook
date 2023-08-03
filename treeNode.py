@@ -17,6 +17,7 @@ class tree(baseObject):
 
     def setPersonality(self, personality):
         self.writerPersonality = personality
+        print("set personality to",self.writerPersonality)
 
     def toList(self):
         l = []
@@ -147,8 +148,8 @@ class tree(baseObject):
         self.deleteById(NodeID)
         print("Deleted node with id: " + str(NodeID))
 
-    # def cascadeDelete(self, NodeID):
-    #     '''This will delete all the nodes under the given node id NodeID except for the node itself'''
+    # def cascadeDeleteInclusive(self, NodeID):
+    #     '''This will delete all the nodes under the given node id NodeID including the node itself'''
     #     # if you are deleting the root node, then you are deleting the whole tree, so we create a new root node for you
     #     if NodeID == 1:
     #         self.create_treeNode(0, 'root', 'root')
@@ -156,8 +157,8 @@ class tree(baseObject):
     #     print("childList",childList)
     #     for child in reversed(childList): # go through the list backwards so that the children are deleted first before the parent
     #         print("child",child)
-    #         self.cascadeDelete(child[1])
-    #     print("Deleting all children of node: " + str(NodeID) + " except for the node itself")
+    #         self.cascadeDeleteInclusive(child[1])
+    #     print("Deleting all children of node: " + str(NodeID) + " including the node itself")
     #     self.delete_treeNode(NodeID)
 
     def cascadeDelete(self, NodeID):
@@ -221,6 +222,9 @@ class tree(baseObject):
             return None
 
     def export_treeNode(self, starterID=None, childList=None, tabMultiplier=0):
+        if tabMultiplier == 0:
+            self.exportString = [] # Only clear on initial call
+
         '''This will export the tree into a string'''
         if starterID == 1: # if it is the root node, then add it to the string
             nodeLabel = self.data[0]['NodeLabel'] #grab the node label
@@ -243,7 +247,7 @@ class tree(baseObject):
         '''This will generate a list of chapters based on the user prompt'''
         
         formatting = "Here is what we have written in the book so far: \n\""
-        prompt_instructions = f"The personality of the writer should be <{self.writerPersonality}>Please generate a list of {howManyChapters} chapter subheadings for the book with the description as <{userPrompt}> in a numbered, bulleted list structured as follows:\n \"1. example_subtitle1 \n 2. example_subtitle2\" \n Here are {howManyChapters} new chapters based on the description and written work so far:\n"
+        prompt_instructions = f"The personality of the writer should be <{self.writerPersonality}>Please generate a list of {howManyChapters} chapter subheadings with a new line character after each subheading for the book with the description as <{userPrompt}> in a numbered, bulleted list structured as follows:\n \"1. example_subtitle1 \n 2. example_subtitle2\" \n Here are {howManyChapters} new chapters based on the description and written work so far:\n"
         prompt = formatting + promptSoFar + "\"" + prompt_instructions
         
         # Call the OpenAI API with the prompt to generate a list of book subtitles
@@ -289,6 +293,8 @@ class tree(baseObject):
             # create node for each chapter
             print("Creating node for chapter: " + chapterList[i])
             self.create_treeNode(ParentNodeID=NodeID, NodeLabel=chapterList[i], NodeData="")
+            # set the personality using the writer personality
+
     
     def generateNodeWriting(self, user_prompt, openAIKey, promptSoFar, CurrentNodeID):
         '''This will generate writing for each node'''

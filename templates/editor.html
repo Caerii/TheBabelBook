@@ -98,9 +98,12 @@
             <b>(Appends to bottom of children of current node.)</b>
             <input type="text" id="book_description" name="prompt" class="form-control" placeholder="The ancient book of eggnog.">
             <button type="submit" class="btn btn-primary">AI Generate Book Chapters</button>
+            <br>
+            <label for="chapter_count" class="form-label">How many chapters?</label> <br>
+            <input type="number" id="chapter_count" name="chapter_count" class="form-control" min="1" max="10" value="5">  
         </form>
 
-        <b>The current writer personality is:</b> {{ tree.getPersonality() }} <br>
+        <b>The current writer personality is:</b> {{ tree.writerPersonality }} <br>
         
         {% if tree.data|default([])|length > 0 %}
             {% for node in tree.data %}
